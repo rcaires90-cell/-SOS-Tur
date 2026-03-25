@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoaFácil Ultra — O SaaS de Viagens mais Completo do Brasil</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#07090F;--deep:#0D1120;--navy:#121929;--card:#18223A;--card2:#1E2B45;
+  --border:#253352;--border2:#2E3D5E;
+  --flame:#FF4D1A;--flame2:#FF7043;
+  --gold:#FFB800;--gold2:#FFD54F;
+  --sky:#2196F3;--sky2:#64B5F6;
+  --mint:#00C896;--mint2:#4DD0B4;
+  --violet:#7C3AED;--violet2:#A78BFA;
+  --rose:#F43F5E;--rose2:#FB7185;
+  --amber:#F59E0B;
+  --text:#EEF2FF;--soft:#7B90B8;--softer:#4A5878;
+  --clash:'Clash Display',sans-serif;
+  --cab:'Cabinet Grotesk',sans-serif;
+  --body:'Instrument Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--text);font-family:var(--body);overflow-x:hidden;}
+.screen{display:none;}.screen.active{display:block;}
+
+/* ── UTILS ── */
+.btn-flame{background:linear-gradient(135deg,var(--flame),var(--flame2));color:#fff;border:none;border-radius:10px;font-family:var(--cab);font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-flame:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,77,26,.4);}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--soft);border-radius:10px;font-family:var(--body);font-weight:500;cursor:pointer;transition:all .2s;}
+.btn-ghost:hover{border-color:var(--flame);color:var(--text);}
+.btn-mint{background:linear-gradient(135deg,var(--mint),var(--mint2));color:#07090F;border:none;border-radius:10px;font-family:var(--cab);font-weight:800;cursor:pointer;transition:all .2s;}
+.btn-mint:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,200,150,.35);}
+.btn-violet{background:linear-gradient(135deg,var(--violet),var(--violet2));color:#fff;border:none;border-radius:10px;font-family:var(--cab);font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-violet:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.4);}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;}
+.bg-flame{background:rgba(255,77,26,.15);color:var(--flame);}
+.bg-gold{background:rgba(255,184,0,.15);color:var(--gold);}
+.bg-mint{background:rgba(0,200,150,.15);color:var(--mint);}
+.bg-sky{background:rgba(33,150,243,.15);color:var(--sky);}
+.bg-violet{background:rgba(124,58,237,.15);color:var(--violet2);}
+.bg-rose{background:rgba(244,63,94,.15);color:var(--rose);}
+.bg-soft{background:rgba(123,144,184,.1);color:var(--soft);}
+.bg-amber{background:rgba(245,158,11,.15);color:var(--amber);}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;padding:0 52px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,9,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.04);}
+.logo{font-family:var(--clash);font-weight:700;font-size:21px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+.logo-dot{width:8px;height:8px;background:var(--flame);border-radius:50%;box-shadow:0 0 8px var(--flame);}
+.nav-links{display:flex;gap:24px;list-style:none;}
+.nav-links a{color:var(--soft);text-decoration:none;font-size:13px;font-weight:500;transition:color .2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-emergency{display:flex;align-items:center;gap:6px;background:rgba(244,63,94,.12);border:1px solid rgba(244,63,94,.3);color:var(--rose2);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;animation:pulse-border 2s infinite;}
+@keyframes pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,.3);}50%{box-shadow:0 0 0 4px rgba(244,63,94,.08);}}
+.nav-right{display:flex;gap:8px;align-items:center;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 20px 60px;position:relative;overflow:hidden;text-align:center;}
+.hero-orb1{position:absolute;top:-200px;left:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(255,77,26,.07),transparent 65%);pointer-events:none;}
+.hero-orb2{position:absolute;bottom:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,.06),transparent 65%);pointer-events:none;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:54px 54px;pointer-events:none;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,77,26,.08);border:1px solid rgba(255,77,26,.2);color:var(--flame2);padding:6px 18px;border-radius:100px;font-size:12px;font-weight:600;margin-bottom:24px;animation:fadeUp .5s ease both;}
+.hero h1{font-family:var(--clash);font-size:clamp(40px,7.5vw,96px);font-weight:700;line-height:1.01;letter-spacing:-3.5px;max-width:960px;animation:fadeUp .5s .1s ease both;}
+.hero h1 .accent{background:linear-gradient(135deg,var(--flame),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero h1 .accent2{color:var(--mint);}
+.hero-sub{margin-top:18px;font-size:17px;color:var(--soft);max-width:580px;line-height:1.75;animation:fadeUp .5s .2s ease both;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px;animation:fadeUp .5s .25s ease both;}
+.hero-pill{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;color:var(--soft);}
+.hero-ctas{display:flex;gap:12px;margin-top:32px;animation:fadeUp .5s .3s ease both;}
+
+/* ── SEARCH BOX ── */
+.search-box{margin-top:40px;width:100%;max-width:940px;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:26px;box-shadow:0 40px 100px rgba(0,0,0,.6);animation:fadeUp .6s .4s ease both;}
+.stabs{display:flex;gap:4px;margin-bottom:20px;}
+.stab{padding:7px 16px;border:none;background:transparent;color:var(--soft);font-family:var(--body);font-size:13px;font-weight:500;border-radius:7px;cursor:pointer;transition:all .2s;}
+.stab.on{background:var(--flame);color:#fff;}
+.srow{display:grid;grid-template-columns:1.2fr 1.2fr 1fr 1fr auto;gap:10px;align-items:end;}
+.sf label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--soft);margin-bottom:6px;}
+.sf input,.sf select{width:100%;background:var(--navy);border:1px solid var(--border);color:var(--text);padding:11px 13px;border-radius:9px;font-family:var(--body);font-size:14px;outline:none;transition:border-color .2s;}
+.sf input:focus{border-color:var(--flame);}
+.sf input::placeholder{color:rgba(123,144,184,.35);}
+.sbtn{background:linear-gradient(135deg,var(--flame),var(--flame2));color:#fff;border:none;padding:12px 24px;border-radius:9px;font-family:var(--cab);font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.sbtn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,77,26,.4);}
+.smeta{margin-top:12px;display:flex;gap:20px;flex-wrap:wrap;}
+.smeta span{font-size:11px;color:var(--soft);display:flex;align-items:center;gap:5px;}
+.smeta span b{color:var(--mint);}
+
+/* ── PROMO TICKER ── */
+.ticker{background:linear-gradient(90deg,var(--flame),#cc2d00);padding:12px 0;overflow:hidden;}
+.ticker-wrap{display:flex;gap:60px;animation:ticker 35s linear infinite;white-space:nowrap;}
+.tick-item{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;}
+.tick-price{font-family:var(--clash);font-size:17px;font-weight:700;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ── SECTIONS ── */
+.sec{padding:80px 52px;}
+.sec-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;}
+.sec-h{font-family:var(--clash);font-size:clamp(26px,4vw,48px);font-weight:700;letter-spacing:-1.5px;margin-bottom:10px;}
+.sec-p{color:var(--soft);font-size:15px;line-height:1.75;max-width:500px;margin-bottom:44px;}
+
+/* ── DIFFERENTIALS GRID ── */
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.diff-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;position:relative;overflow:hidden;cursor:pointer;transition:all .3s;}
+.diff-card:hover{transform:translateY(-5px);border-color:rgba(255,77,26,.3);}
+.diff-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent,var(--flame)),transparent);opacity:0;transition:opacity .3s;}
+.diff-card:hover::before{opacity:1;}
+.diff-icon{font-size:34px;margin-bottom:16px;}
+.diff-badge{margin-bottom:10px;}
+.diff-title{font-family:var(--cab);font-size:18px;font-weight:800;margin-bottom:8px;}
+.diff-desc{font-size:13px;color:var(--soft);line-height:1.65;}
+.diff-highlight{margin-top:14px;background:rgba(255,255,255,.04);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text);font-style:italic;border-left:2px solid var(--accent,var(--flame));}
+
+/* ── DREAM MODE ── */
+.dream-section{display:grid;grid-template-columns:1fr 480px;gap:48px;align-items:center;}
+.dream-map{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;height:400px;position:relative;overflow:hidden;}
+.dream-map-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0D1120 0%,#121929 100%);border-radius:20px;}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(37,51,82,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(37,51,82,.4) 1px,transparent 1px);background-size:32px 32px;}
+.map-dot{position:absolute;cursor:pointer;transition:transform .2s;}
+.map-dot:hover{transform:scale(1.3);}
+.map-dot-inner{width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 4px rgba(0,200,150,.2);}
+.map-dot-label{position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border);padding:3px 8px;border-radius:6px;font-size:11px;white-space:nowrap;font-weight:600;}
+.map-dot-price{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--mint);white-space:nowrap;}
+.budget-slider{margin-bottom:20px;}
+.budget-slider label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--soft);display:block;margin-bottom:8px;}
+.budget-slider input[type=range]{width:100%;accent-color:var(--flame);}
+.budget-display{font-family:var(--clash);font-size:36px;font-weight:700;color:var(--flame);letter-spacing:-1px;}
+.dream-destinations{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+.dream-dest{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;}
+.dream-dest:hover{border-color:var(--mint);}
+.dream-dest-flag{font-size:22px;}
+.dream-dest-name{font-weight:700;font-size:14px;}
+.dream-dest-from{font-size:12px;color:var(--soft);}
+.dream-dest-price{margin-left:auto;font-family:var(--clash);font-size:18px;font-weight:700;color:var(--mint);}
+
+/* ── CALENDAR PRICE ── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px;}
+.cal-header{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--soft);text-align:center;padding:6px 0;}
+.cal-day{border-radius:8px;padding:8px 4px;text-align:center;cursor:pointer;transition:all .2s;border:1px solid transparent;}
+.cal-day:hover{border-color:var(--flame);}
+.cal-day .d{font-size:13px;font-weight:600;margin-bottom:2px;}
+.cal-day .p{font-size:10px;font-weight:700;}
+.cal-cheap{background:rgba(0,200,150,.12);}.cal-cheap .p{color:var(--mint);}
+.cal-mid{background:rgba(245,158,11,.08);}.cal-mid .p{color:var(--amber);}
+.cal-exp{background:rgba(244,63,94,.1);}.cal-exp .p{color:var(--rose);}
+.cal-today{border-color:var(--flame)!important;}
+.cal-legend{display:flex;gap:16px;margin-top:12px;}
+.cal-leg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--soft);}
+.cal-leg-dot{width:10px;height:10px;border-radius:3px;}
+
+/* ── FARE ERRORS ── */
+.error-feed{display:flex;flex-direction:column;gap:12px;}
+.error-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;gap:16px;align-items:center;transition:all .25s;}
+.error-card:hover{border-color:rgba(255,184,0,.35);transform:translateX(4px);}
+.error-card.new{border-color:rgba(244,63,94,.35);animation:errpulse 2s ease infinite;}
+@keyframes errpulse{0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,.15);}50%{box-shadow:0 0 0 6px rgba(244,63,94,.04);}}
+.err-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.err-route{font-family:var(--clash);font-size:22px;font-weight:700;letter-spacing:-.5px;}
+.err-info{font-size:12px;color:var(--soft);margin-top:2px;}
+.err-prices{margin-left:auto;text-align:right;}
+.err-normal{font-size:12px;color:var(--soft);text-decoration:line-through;}
+.err-error{font-family:var(--clash);font-size:28px;font-weight:700;color:var(--rose);}
+.err-save{font-size:11px;font-weight:700;color:var(--mint);}
+.err-timer{font-size:11px;color:var(--amber);margin-top:4px;}
+
+/* ── AI FORECAST ── */
+.ai-card{background:linear-gradient(135deg,var(--card),rgba(124,58,237,.06));border:1px solid rgba(124,58,237,.2);border-radius:18px;padding:28px;}
+.ai-verdict{display:flex;align-items:center;gap:16px;margin:20px 0;}
+.ai-verdict-icon{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--violet),var(--violet2));display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+.ai-verdict-text{font-family:var(--clash);font-size:20px;font-weight:700;letter-spacing:-.5px;}
+.ai-verdict-conf{font-size:13px;color:var(--soft);margin-top:4px;}
+.ai-graph{height:80px;background:var(--navy);border-radius:10px;display:flex;align-items:flex-end;padding:10px;gap:4px;margin:16px 0;}
+.ai-bar{flex:1;border-radius:3px 3px 0 0;min-height:8px;transition:all .3s;}
+.ai-pred{border:2px dashed;border-radius:3px 3px 0 0!important;opacity:.6;}
+.ai-graph-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--soft);padding:0 4px;}
+
+/* ── MILES CALCULATOR ── */
+.miles-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;}
+.miles-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.miles-input-group{background:var(--navy);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.miles-input-group label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--soft);display:block;margin-bottom:6px;}
+.miles-input-group input{background:transparent;border:none;color:var(--text);font-family:var(--clash);font-size:24px;font-weight:700;width:100%;outline:none;}
+.miles-result{background:linear-gradient(135deg,rgba(0,200,150,.08),rgba(33,150,243,.05));border:1px solid rgba(0,200,150,.2);border-radius:12px;padding:18px;text-align:center;}
+.miles-result-label{font-size:12px;color:var(--soft);margin-bottom:6px;}
+.miles-result-value{font-family:var(--clash);font-size:38px;font-weight:700;color:var(--mint);}
+.miles-result-sub{font-size:13px;color:var(--soft);margin-top:4px;}
+.miles-programs{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.miles-prog{padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.miles-prog.on{background:var(--violet);border-color:var(--violet);color:#fff;}
+
+/* ── SPLIT ── */
+.split-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;}
+.split-friends{display:flex;flex-direction:column;gap:10px;margin:16px 0;}
+.split-friend{display:flex;align-items:center;gap:12px;background:var(--navy);border-radius:10px;padding:12px 14px;}
+.split-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#07090F;flex-shrink:0;}
+.split-name{font-weight:600;font-size:14px;}
+.split-amount{margin-left:auto;font-family:var(--clash);font-size:18px;font-weight:700;color:var(--mint);}
+.split-status{font-size:11px;margin-top:2px;text-align:right;}
+
+/* ── PRICE LOCK ── */
+.lock-card{background:linear-gradient(135deg,rgba(255,184,0,.08),rgba(255,77,26,.04));border:1px solid rgba(255,184,0,.2);border-radius:18px;padding:28px;text-align:center;}
+.lock-icon{font-size:48px;margin-bottom:16px;}
+.lock-timer{font-family:var(--clash);font-size:44px;font-weight:700;letter-spacing:-2px;color:var(--gold);}
+.lock-timer-label{font-size:13px;color:var(--soft);margin-bottom:20px;}
+.lock-price-row{display:flex;justify-content:center;gap:32px;margin-bottom:20px;}
+.lock-price-item{text-align:center;}
+.lock-price-label{font-size:11px;color:var(--soft);margin-bottom:4px;}
+.lock-price-val{font-family:var(--clash);font-size:28px;font-weight:700;}
+
+/* ═══════════════════════════════════
+   EMERGENCY SUPPORT — CORE FEATURE
+═══════════════════════════════════ */
+.emergency-hero{background:linear-gradient(135deg,rgba(244,63,94,.08),rgba(255,77,26,.04));border:1px solid rgba(244,63,94,.2);border-radius:24px;padding:52px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin:0 52px;}
+.emrg-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(244,63,94,.12);border:1px solid rgba(244,63,94,.25);color:var(--rose2);padding:7px 18px;border-radius:100px;font-size:12px;font-weight:700;margin-bottom:20px;}
+.emrg-h{font-family:var(--clash);font-size:clamp(28px,4vw,48px);font-weight:700;letter-spacing:-1.5px;margin-bottom:14px;}
+.emrg-h span{color:var(--rose);}
+.emrg-p{font-size:15px;color:var(--soft);line-height:1.75;margin-bottom:28px;}
+.emrg-stats{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.emrg-stat{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.emrg-stat-val{font-family:var(--clash);font-size:28px;font-weight:700;color:var(--rose);}
+.emrg-stat-label{font-size:12px;color:var(--soft);margin-top:4px;}
+.emrg-phone{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;font-size:14px;}
+.emrg-phone-header{background:linear-gradient(135deg,var(--rose),#a01030);border-radius:12px;padding:14px;text-align:center;margin-bottom:16px;}
+.emrg-phone-header .big{font-family:var(--clash);font-size:28px;font-weight:700;}
+.emrg-phone-header .sub{font-size:12px;opacity:.8;margin-top:2px;}
+.incident-list{display:flex;flex-direction:column;gap:8px;}
+.incident-item{background:var(--navy);border-radius:10px;padding:12px 14px;border-left:3px solid;}
+.incident-item.red{border-color:var(--rose);}
+.incident-item.amber{border-color:var(--amber);}
+.incident-item.green{border-color:var(--mint);}
+.incident-route{font-weight:700;font-size:13px;}
+.incident-agency{font-size:11px;color:var(--soft);}
+.incident-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;float:right;}
+.incident-badge.urgent{background:rgba(244,63,94,.15);color:var(--rose);}
+.incident-badge.progress{background:rgba(245,158,11,.15);color:var(--amber);}
+.incident-badge.resolved{background:rgba(0,200,150,.15);color:var(--mint);}
+
+/* ── EMERGENCY DASHBOARD ── */
+.emrg-dash-grid{display:grid;grid-template-columns:320px 1fr 280px;gap:20px;}
+.emrg-sidebar{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;}
+.emrg-sidebar-header{background:linear-gradient(135deg,var(--rose),#a01030);border-radius:12px;padding:16px;text-align:center;margin-bottom:4px;}
+.emrg-sb-stat{background:var(--navy);border-radius:10px;padding:14px;text-align:center;}
+.emrg-sb-stat-num{font-family:var(--clash);font-size:32px;font-weight:700;}
+.emrg-sb-stat-label{font-size:11px;color:var(--soft);margin-top:2px;}
+.emrg-ticket-feed{display:flex;flex-direction:column;gap:12px;}
+.emrg-ticket{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;transition:all .2s;cursor:pointer;}
+.emrg-ticket:hover{border-color:rgba(244,63,94,.3);}
+.emrg-ticket.priority-1{border-left:3px solid var(--rose);}
+.emrg-ticket.priority-2{border-left:3px solid var(--amber);}
+.emrg-ticket.priority-3{border-left:3px solid var(--mint);}
+.et-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.et-id{font-size:11px;color:var(--soft);}
+.et-time{font-size:11px;color:var(--soft);}
+.et-type{font-family:var(--cab);font-size:15px;font-weight:700;margin-bottom:4px;}
+.et-agency{font-size:12px;color:var(--soft);}
+.et-detail{background:var(--navy);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text);margin:10px 0;line-height:1.6;}
+.et-pax{font-size:12px;color:var(--soft);}
+.et-pax strong{color:var(--text);}
+.et-actions{display:flex;gap:8px;margin-top:12px;}
+.et-btn{flex:1;padding:8px;border-radius:8px;font-size:12px;font-weight:700;font-family:var(--cab);cursor:pointer;transition:all .2s;border:none;}
+.et-btn-assign{background:var(--rose);color:#fff;}
+.et-btn-assign:hover{background:#cc2040;}
+.et-btn-view{background:var(--card2);color:var(--text);border:1px solid var(--border);}
+.et-btn-view:hover{border-color:var(--soft);}
+.sla-bar{height:4px;border-radius:2px;background:var(--border);margin-top:10px;}
+.sla-fill{height:100%;border-radius:2px;transition:width .3s;}
+.sla-label{display:flex;justify-content:space-between;font-size:10px;color:var(--soft);margin-top:4px;}
+.agent-card{background:var(--navy);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.agent-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#07090F;flex-shrink:0;}
+.agent-name{font-weight:600;font-size:13px;}
+.agent-status-text{font-size:11px;color:var(--soft);}
+.agent-load{margin-left:auto;font-size:11px;text-align:right;}
+.agent-load span{font-family:var(--clash);font-size:16px;font-weight:700;}
+.online-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+.online-dot.green{background:var(--mint);box-shadow:0 0 6px var(--mint);}
+.online-dot.amber{background:var(--amber);}
+.online-dot.red{background:var(--rose);}
+
+/* ── EMERGENCY PRICING ── */
+.emrg-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:880px;}
+.emrg-plan{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;transition:transform .3s;}
+.emrg-plan:hover{transform:translateY(-4px);}
+.emrg-plan.featured{border-color:var(--rose);background:linear-gradient(145deg,var(--card),rgba(244,63,94,.04));}
+.emrg-plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--rose);color:#fff;font-size:11px;font-weight:800;padding:3px 14px;border-radius:100px;white-space:nowrap;}
+.emrg-plan-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--soft);margin-bottom:12px;}
+.emrg-plan-price{font-family:var(--clash);font-size:42px;font-weight:700;letter-spacing:-2px;}
+.emrg-plan-period{color:var(--soft);font-size:13px;margin-bottom:24px;}
+.emrg-plan-feats{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.emrg-plan-feats li{font-size:13px;color:var(--soft);display:flex;gap:9px;align-items:flex-start;}
+.emrg-plan-feats li::before{content:'✓';color:var(--mint);font-weight:700;flex-shrink:0;}
+.emrg-plan-feats li.no{color:rgba(123,144,184,.3);}
+.emrg-plan-feats li.no::before{content:'✗';color:rgba(123,144,184,.2);}
+
+/* ── APP LAYOUT ── */
+.app{display:flex;min-height:100vh;}
+.sb{width:248px;background:var(--deep);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;height:100vh;top:0;left:0;z-index:50;}
+.sb-head{padding:20px;border-bottom:1px solid var(--border);}
+.sb-nav{padding:10px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
+.sb-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--softer);padding:14px 12px 6px;}
+.sbi{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;color:var(--soft);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left;}
+.sbi:hover{background:var(--card);color:var(--text);}
+.sbi.on{background:rgba(255,77,26,.1);color:var(--flame);}
+.sbi .ico{font-size:15px;width:18px;text-align:center;}
+.sbi-badge{margin-left:auto;background:var(--flame);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;}
+.sbi-badge.rose{background:var(--rose);}
+.sbi-badge.gold{background:var(--gold);color:#07090F;}
+.sb-foot{padding:12px;border-top:1px solid var(--border);}
+.sb-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:var(--card);}
+.sb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--flame),#8A0000);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.sb-name{font-size:13px;font-weight:600;}
+.sb-plan{font-size:11px;color:var(--flame);}
+.main{margin-left:248px;flex:1;padding:26px;}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.ph-title{font-family:var(--clash);font-size:22px;font-weight:700;letter-spacing:-.5px;}
+.ph-sub{color:var(--soft);font-size:13px;margin-top:3px;}
+.stats4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:20px;transition:border-color .2s;}
+.sc:hover{border-color:rgba(255,77,26,.2);}
+.sc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--soft);margin-bottom:9px;}
+.sc-val{font-family:var(--clash);font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:3px;}
+.sc-chg{font-size:11px;color:var(--soft);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:20px;}
+.ctit{font-family:var(--cab);font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.cact{font-size:12px;color:var(--flame);font-weight:600;cursor:pointer;font-family:var(--body);}
+
+/* ── EMERGENCY CONTROL CENTER ── */
+.ec-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;}
+.ec-card{border-radius:14px;padding:20px;border:1px solid;display:flex;flex-direction:column;gap:4px;}
+.ec-card.red{background:rgba(244,63,94,.08);border-color:rgba(244,63,94,.25);}
+.ec-card.amber{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.25);}
+.ec-card.green{background:rgba(0,200,150,.08);border-color:rgba(0,200,150,.25);}
+.ec-num{font-family:var(--clash);font-size:40px;font-weight:700;}
+.ec-card.red .ec-num{color:var(--rose);}
+.ec-card.amber .ec-num{color:var(--amber);}
+.ec-card.green .ec-num{color:var(--mint);}
+.ec-label{font-size:12px;color:var(--soft);}
+.ec-trend{font-size:11px;font-weight:600;}
+.ec-card.red .ec-trend{color:var(--rose2);}
+.ec-card.amber .ec-trend{color:var(--amber);}
+.ec-card.green .ec-trend{color:var(--mint);}
+
+/* ── NOMAD MODE ── */
+.nomad-route{display:flex;align-items:center;gap:0;margin:16px 0;overflow-x:auto;padding-bottom:8px;}
+.nomad-city{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;text-align:center;min-width:120px;flex-shrink:0;}
+.nomad-city-emoji{font-size:28px;margin-bottom:6px;}
+.nomad-city-name{font-weight:700;font-size:13px;}
+.nomad-city-cost{font-size:11px;color:var(--mint);font-weight:600;}
+.nomad-arrow{display:flex;flex-direction:column;align-items:center;padding:0 8px;flex-shrink:0;}
+.nomad-arrow-line{width:40px;height:1px;background:var(--border);}
+.nomad-arrow-price{font-size:10px;color:var(--flame);font-weight:700;margin-top:3px;}
+
+/* ── PLANS FULL ── */
+.plans-big{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;position:relative;transition:transform .3s;}
+.plan-card:hover{transform:translateY(-4px);}
+.plan-card.top{border-color:var(--flame);background:linear-gradient(145deg,var(--card),rgba(255,77,26,.04));}
+.plan-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;padding:3px 14px;border-radius:100px;white-space:nowrap;}
+.plan-nm{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--soft);margin-bottom:10px;}
+.plan-pr{font-family:var(--clash);font-size:40px;font-weight:700;letter-spacing:-1.5px;}
+.plan-pr sup{font-size:18px;font-weight:600;vertical-align:super;}
+.plan-pe{color:var(--soft);font-size:13px;margin-bottom:22px;}
+.plan-div{height:1px;background:var(--border);margin:16px 0;}
+.plan-feats{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:26px;}
+.plan-feats li{font-size:13px;color:var(--soft);display:flex;gap:8px;align-items:flex-start;}
+.plan-feats li::before{content:'✓';color:var(--mint);font-weight:700;flex-shrink:0;}
+.plan-feats li.no{color:rgba(123,144,184,.3);}
+.plan-feats li.no::before{content:'✗';color:rgba(123,144,184,.2);}
+.plan-btn{width:100%;padding:12px;border-radius:9px;font-family:var(--cab);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;border:none;}
+.plan-btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+.plan-btn-ghost:hover{border-color:var(--flame);color:var(--flame);}
+
+/* ── FOOTER ── */
+.footer{border-top:1px solid var(--border);padding:48px 52px 28px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px;}
+.footer-brand p{font-size:13px;color:var(--soft);line-height:1.7;margin-top:10px;max-width:220px;}
+.footer-col h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--soft);margin-bottom:14px;}
+.footer-col a{display:block;font-size:13px;color:var(--soft);text-decoration:none;margin-bottom:9px;transition:color .2s;}
+.footer-col a:hover{color:var(--text);}
+.footer-emergency{background:linear-gradient(135deg,rgba(244,63,94,.08),rgba(255,77,26,.04));border:1px solid rgba(244,63,94,.2);border-radius:12px;padding:16px;margin-bottom:24px;}
+.footer-bottom{border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;font-size:12px;color:var(--soft);}
+
+/* ── DEMO NAV ── */
+.demo-nav{margin-top:24px;display:flex;gap:8px;flex-wrap:wrap;padding:16px;background:var(--card);border-radius:12px;border:1px solid var(--border);}
+.demo-nav span{font-size:12px;color:var(--soft);margin-right:4px;align-self:center;}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.live{width:7px;height:7px;border-radius:50%;background:var(--mint);display:inline-block;margin-right:5px;animation:pulse 2s infinite;}
+.live.red{background:var(--rose);}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--ink);}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 1 — LANDING COMPLETA
+═══════════════════════════════════════════════════ -->
+<div class="screen active" id="sc-land">
+<nav class="nav">
+  <div class="logo" onclick="go('land')"><div class="logo-dot"></div>VoaFácil</div>
+  <ul class="nav-links">
+    <li><a href="#">Passagens</a></li>
+    <li><a href="#">Promoções</a></li>
+    <li><a href="#">Modo Sonho</a></li>
+    <li><a href="#">Erros de Tarifa</a></li>
+    <li><a href="#">Milhas</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-emergency" onclick="go('emergency')">🚨 Plantão 24/7</div>
+    <button class="btn-ghost" style="padding:7px 16px;font-size:13px" onclick="go('dashboard')">Entrar</button>
+    <button class="btn-flame" style="padding:8px 18px;font-size:13px" onclick="go('dashboard')">Criar conta grátis</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb1"></div><div class="hero-orb2"></div><div class="hero-grid"></div>
+  <div class="hero-eyebrow">🇧🇷 O SaaS de viagens mais completo do Brasil — 9 diferenciais exclusivos</div>
+  <h1>Voe mais longe.<br><span class="accent">Pague menos.</span><br>Nunca se <span class="accent2">perca.</span></h1>
+  <p class="hero-sub">IA que prevê preços. Mapa de sonhos. Clube de erros de tarifa. Combinador de milhas. Plantão emergencial 24/7. Tudo que você precisa para viajar melhor.</p>
+  <div class="hero-pills">
+    <div class="hero-pill">🤖 IA de previsão de preço</div>
+    <div class="hero-pill">🗺️ Modo Sonho com mapa</div>
+    <div class="hero-pill">⚡ Clube erros de tarifa</div>
+    <div class="hero-pill">📅 Calendário de preços</div>
+    <div class="hero-pill">💎 Combinador de milhas</div>
+    <div class="hero-pill">👫 Split com amigos</div>
+    <div class="hero-pill">💻 Modo Nômade Digital</div>
+    <div class="hero-pill">🔒 Seguro de preço</div>
+    <div class="hero-pill">🚨 Plantão emergencial 24/7</div>
+  </div>
+  <div class="hero-ctas">
+    <button class="btn-flame" style="padding:14px 32px;font-size:16px" onclick="go('dashboard')">Começar grátis — sem cartão</button>
+    <button class="btn-ghost" style="padding:14px 28px;font-size:15px" onclick="go('emergency')">🚨 Ver Plantão 24/7</button>
+  </div>
+
+  <div class="search-box">
+    <div class="stabs">
+      <button class="stab on">✈ Ida e volta</button>
+      <button class="stab">→ Só ida</button>
+      <button class="stab">🗺️ Modo Sonho</button>
+      <button class="stab">💻 Nômade Digital</button>
+    </div>
+    <div class="srow">
+      <div class="sf"><label>Origem</label><input placeholder="São Paulo — GRU" value="São Paulo — GRU"></div>
+      <div class="sf"><label>Destino</label><input placeholder="Para onde? Ou deixe em branco para Modo Sonho"></div>
+      <div class="sf"><label>Ida</label><input type="date" value="2025-04-15"></div>
+      <div class="sf"><label>Volta</label><input type="date" value="2025-04-22"></div>
+      <button class="sbtn" onclick="go('results')">🔍 Buscar</button>
+    </div>
+    <div class="smeta">
+      <span>🌐 <b>127 fontes</b> simultâneas</span>
+      <span>🤖 IA de previsão <b>ativa</b></span>
+      <span>⚡ Erros de tarifa: <b>3 ativos agora</b></span>
+      <span>🔒 Seguro de preço <b>disponível</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-wrap">
+    <div class="tick-item">🔥 GRU→MIA <div class="tick-price">R$1.290</div></div>
+    <div class="tick-item">⚡ ERRO TARIFA: GRU→NRT <div class="tick-price">R$480</div></div>
+    <div class="tick-item">✨ GRU→LIS <div class="tick-price">R$2.180</div></div>
+    <div class="tick-item">💥 CGH→SSA <div class="tick-price">R$289</div></div>
+    <div class="tick-item">⚡ ERRO TARIFA: BSB→CDG <div class="tick-price">R$890</div></div>
+    <div class="tick-item">🎯 GRU→EZE <div class="tick-price">R$680</div></div>
+    <div class="tick-item">🔥 GRU→MIA <div class="tick-price">R$1.290</div></div>
+    <div class="tick-item">⚡ ERRO TARIFA: GRU→NRT <div class="tick-price">R$480</div></div>
+    <div class="tick-item">✨ GRU→LIS <div class="tick-price">R$2.180</div></div>
+    <div class="tick-item">💥 CGH→SSA <div class="tick-price">R$289</div></div>
+    <div class="tick-item">⚡ ERRO TARIFA: BSB→CDG <div class="tick-price">R$890</div></div>
+    <div class="tick-item">🎯 GRU→EZE <div class="tick-price">R$680</div></div>
+  </div>
+</div>
+
+<!-- DIFERENTIALS -->
+<section class="sec">
+  <div class="sec-lbl" style="color:var(--flame)">9 Diferenciais Exclusivos</div>
+  <h2 class="sec-h">Funcionalidades que ninguém<br>tem no Brasil</h2>
+  <p class="sec-p">Cada recurso foi construído para resolver uma dor real de quem viaja ou vende viagens.</p>
+  <div class="diff-grid">
+
+    <div class="diff-card" style="--accent:var(--violet2)" onclick="go('dashboard')">
+      <div class="diff-icon">🤖</div>
+      <div class="diff-badge"><span class="badge bg-violet">Exclusivo BR</span></div>
+      <div class="diff-title">IA de Previsão de Preço</div>
+      <p class="diff-desc">Nossa IA analisa histórico de 12 meses e prevê com 87% de precisão se o preço vai subir ou cair nos próximos 7 dias.</p>
+      <div class="diff-highlight" style="border-color:var(--violet2)">"Compre agora. Com 87% de confiança, esse voo sobe R$320 em 3 dias."</div>
+    </div>
+
+    <div class="diff-card" style="--accent:var(--mint)" onclick="go('dashboard')">
+      <div class="diff-icon">🗺️</div>
+      <div class="diff-badge"><span class="badge bg-mint">Viral</span></div>
+      <div class="diff-title">Modo Sonho — Mapa de Destinos</div>
+      <p class="diff-desc">Digite seu orçamento e a data. O mapa mostra todos os destinos que cabem no seu bolso. A feature mais compartilhada do sistema.</p>
+      <div class="diff-highlight" style="border-color:var(--mint)">"Com R$2.500 você pode ir para: Lisboa, Buenos Aires, Cancún, Bogotá..."</div>
+    </div>
+
+    <div class="diff-card" style="--accent:var(--rose)" onclick="go('dashboard')">
+      <div class="diff-icon">⚡</div>
+      <div class="diff-badge"><span class="badge bg-rose">Alto lucro</span></div>
+      <div class="diff-title">Clube de Erros de Tarifa</div>
+      <p class="diff-desc">Detectamos automaticamente quando aéreas cometem erros de precificação. Membros Pro são avisados com 2h de antecedência.</p>
+      <div class="diff-highlight" style="border-color:var(--rose)">"GRU→Tokyo por R$480! Erro confirmado. Temos ~40min antes de corrigirem."</div>
+    </div>
+
+    <div class="diff-card" style="--accent:var(--amber)" onclick="go('dashboard')">
+      <div class="diff-icon">📅</div>
+      <div class="diff-badge"><span class="badge bg-amber">Aumenta conversão</span></div>
+      <div class="diff-title">Calendário de Preços</div>
+      <p class="diff-desc">Visualize o mês inteiro com cores: verde = barato, vermelho = caro. Usuários mudam o dia de viagem e economizam até 60%.</p>
+      <div class="diff-highlight" style="border-color:var(--amber)">"Viajando terça em vez de sexta: economize R$820 nessa rota."</div>
+    </div>
+
+    <div class="diff-card" style="--accent:var(--violet2)" onclick="go('dashboard')">
+      <div class="diff-icon">💎</div>
+      <div class="diff-badge"><span class="badge bg-violet">Ninguém tem</span></div>
+      <div class="diff-title">Combinador de Milhas + Dinheiro</div>
+      <p class="diff-desc">Integração com LATAM Pass, Smiles e TudoAzul. Calcula automaticamente a combinação ideal de milhas + dinheiro para o menor custo efetivo.</p>
+      <div class="diff-highlight" style="border-color:var(--violet2)">"Use 15k milhas + R$420 = custo efetivo de R$180 nessa passagem."</div>
+    </div>
+
+    <div class="diff-card" style="--accent:var(--sky)" onclick="go('dashboard')">
+      <div class="diff-icon">👫</div>
+      <div class="diff-badge"><span class="badge bg-sky">Viral</span></div>
+      <div class="diff-title">Split com Amigos</div>
+      <p class="diff-desc">Divida a viagem em grupo. Cada pessoa recebe um link para pagar a própria parte. Uma viagem traz 3–5 novos usuários.</p>
+      <div class="diff-highlight" style="border-color:var(--sky)">"Viagem para Miami com 4 amigos — cada um paga R$1.290 direto."</div>
+    </div>
+
+    <div class="diff-card" style="--accent:var(--mint)" onclick="go('dashboard')">
+      <div class="diff-icon">💻</div>
+      <div class="diff-badge"><span class="badge bg-mint">Nômades</span></div>
+      <div class="diff-title">Modo Nômade Digital</div>
+      <p class="diff-desc">Roteiro de múltiplos destinos otimizado por custo total. Encontra a ordem de cidades que minimiza o gasto com voos.</p>
+      <div class="diff-highlight" style="border-color:var(--mint)">"3 meses fora por R$4.200: SP→Lisboa→Bali→Buenos Aires→SP"</div>
+    </div>
+
+    <div class="diff-card" style="--accent:var(--gold)" onclick="go('dashboard')">
+      <div class="diff-icon">🔒</div>
+      <div class="diff-badge"><span class="badge bg-gold">Margem pura</span></div>
+      <div class="diff-title">Seguro de Preço</div>
+      <p class="diff-desc">Pague R$15 para travar um preço por 48h. Se subir, você compra pelo valor travado. Se cair, devolvemos a diferença. Margem altíssima.</p>
+      <div class="diff-highlight" style="border-color:var(--gold)">"Preço travado: R$1.290 por 48h. Suba ou desça, você decide depois."</div>
+    </div>
+
+    <div class="diff-card" style="--accent:var(--rose);cursor:pointer" onclick="go('emergency')">
+      <div class="diff-icon">🚨</div>
+      <div class="diff-badge"><span class="badge bg-rose">B2B Premium</span></div>
+      <div class="diff-title">Plantão Emergencial 24/7</div>
+      <p class="diff-desc">Suporte dedicado para agências de viagens em situações críticas: cancelamentos, conexões perdidas, problemas de hotel fora do horário comercial.</p>
+      <div class="diff-highlight" style="border-color:var(--rose)">"Voo cancelado às 3h? 8 passageiros esperando? A gente resolve em minutos."</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EMERGENCY SECTION -->
+<section style="padding:0 52px 80px">
+  <div class="emergency-hero">
+    <div>
+      <div class="emrg-badge">🚨 NOVO — Exclusivo para Agências</div>
+      <h2 class="emrg-h">Plantão <span>Emergencial</span><br>24 horas por dia</h2>
+      <p class="emrg-p">Imprevistos não têm horário. Cancelamento de voo às 2h da manhã, passageiro preso em conexão perdida, hotel que não honrou reserva — nossa equipe especializada resolve tudo em minutos, não em dias.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn-mint" style="padding:13px 28px;font-size:15px" onclick="go('emergency')">Ver planos do Plantão</button>
+        <button class="btn-ghost" style="padding:12px 24px;font-size:14px" onclick="go('emergency-dash')">Acessar painel</button>
+      </div>
+      <div class="emrg-stats" style="margin-top:28px">
+        <div class="emrg-stat"><div class="emrg-stat-val">< 8min</div><div class="emrg-stat-label">Tempo médio de resposta</div></div>
+        <div class="emrg-stat"><div class="emrg-stat-val">98.4%</div><div class="emrg-stat-label">Casos resolvidos com sucesso</div></div>
+        <div class="emrg-stat"><div class="emrg-stat-val">24/7</div><div class="emrg-stat-label">365 dias por ano</div></div>
+        <div class="emrg-stat"><div class="emrg-stat-val">340+</div><div class="emrg-stat-label">Agências atendidas</div></div>
+      </div>
+    </div>
+    <div class="emrg-phone">
+      <div class="emrg-phone-header">
+        <div style="font-size:12px;margin-bottom:4px">🚨 CENTRAL DE EMERGÊNCIAS</div>
+        <div class="big">0800 VOA FÁCIL</div>
+        <div class="sub">Também WhatsApp e App • Resposta em &lt; 8 minutos</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--soft);margin-bottom:10px">Incidentes em andamento agora</div>
+      <div class="incident-list">
+        <div class="incident-item red">
+          <span class="incident-badge urgent">🔴 URGENTE</span>
+          <div class="incident-route">GRU→MIA·AA906 — Cancelado</div>
+          <div class="incident-agency">Agência Viagens Mundo · 8 pax afetados</div>
+        </div>
+        <div class="incident-item amber">
+          <span class="incident-badge progress">🟡 EM ANDAMENTO</span>
+          <div class="incident-route">GRU→LIS — Conexão perdida em LIS</div>
+          <div class="incident-agency">Explore Turismo · 3 pax · Hotel acionado</div>
+        </div>
+        <div class="incident-item green">
+          <span class="incident-badge resolved">✅ RESOLVIDO</span>
+          <div class="incident-route">CGH→SSA — Overbooking GOL</div>
+          <div class="incident-agency">Sol e Mar Viagens · Reacomodação feita</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING COMPLETO -->
+<section class="sec" style="padding-top:0">
+  <div class="sec-lbl" style="color:var(--flame)">Planos</div>
+  <h2 class="sec-h">Para viajantes e para agências</h2>
+  <div class="plans-big">
+    <div class="plan-card">
+      <div class="plan-nm">Explorer</div>
+      <div class="plan-pr">R$0</div>
+      <div class="plan-pe">para sempre</div>
+      <div class="plan-div"></div>
+      <ul class="plan-feats">
+        <li>Busca em todas as aéreas</li>
+        <li>Calendário de preços</li>
+        <li>3 alertas por mês</li>
+        <li>Modo Sonho básico</li>
+        <li class="no">IA de previsão</li>
+        <li class="no">Erros de tarifa</li>
+        <li class="no">Combinador de milhas</li>
+        <li class="no">Plantão 24/7</li>
+      </ul>
+      <button class="plan-btn plan-btn-ghost" onclick="go('dashboard')">Começar grátis</button>
+    </div>
+    <div class="plan-card top">
+      <div class="plan-tag" style="background:var(--flame)">🔥 Mais popular</div>
+      <div class="plan-nm">Voyager Pro</div>
+      <div class="plan-pr"><sup>R$</sup>29</div>
+      <div class="plan-pe">por mês</div>
+      <div class="plan-div"></div>
+      <ul class="plan-feats">
+        <li>Tudo do Explorer</li>
+        <li>IA de previsão de preço</li>
+        <li>Alertas WhatsApp ilimitados</li>
+        <li>Clube erros de tarifa (2h antes)</li>
+        <li>Combinador de milhas</li>
+        <li>Split com amigos</li>
+        <li>Seguro de preço</li>
+        <li class="no">Plantão emergencial</li>
+      </ul>
+      <button class="plan-btn btn-flame" style="padding:12px" onclick="go('dashboard')">Assinar Voyager</button>
+    </div>
+    <div class="plan-card">
+      <div class="plan-nm">Nômade</div>
+      <div class="plan-pr"><sup>R$</sup>59</div>
+      <div class="plan-pe">por mês</div>
+      <div class="plan-div"></div>
+      <ul class="plan-feats">
+        <li>Tudo do Voyager</li>
+        <li>Modo Nômade Digital</li>
+        <li>Roteiro otimizado por IA</li>
+        <li>Custo de vida por cidade</li>
+        <li>Vistos e documentação</li>
+        <li>Comunidade de nômades</li>
+        <li class="no">Plantão emergencial</li>
+        <li class="no">API de agência</li>
+      </ul>
+      <button class="plan-btn plan-btn-ghost" onclick="go('dashboard')">Assinar Nômade</button>
+    </div>
+    <div class="plan-card" style="border-color:rgba(244,63,94,.25);background:linear-gradient(145deg,var(--card),rgba(244,63,94,.04))">
+      <div class="plan-tag" style="background:var(--rose)">🚨 Para Agências</div>
+      <div class="plan-nm">Agência Elite</div>
+      <div class="plan-pr"><sup>R$</sup>299</div>
+      <div class="plan-pe">por mês · até 10 usuários</div>
+      <div class="plan-div"></div>
+      <ul class="plan-feats">
+        <li>Tudo do Nômade</li>
+        <li style="color:var(--rose2)">🚨 Plantão 24/7 — prioridade máxima</li>
+        <li>Resposta garantida &lt; 8 min</li>
+        <li>Gerente de conta dedicado</li>
+        <li>API REST + webhooks</li>
+        <li>White-label (sua marca)</li>
+        <li>Relatórios de ROI</li>
+        <li>SLA 99.9% garantido</li>
+      </ul>
+      <button class="plan-btn btn-mint" style="padding:12px" onclick="go('emergency')">Assinar Elite + Plantão</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-emergency">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:28px">🚨</div>
+        <div><div style="font-weight:700;font-size:15px">Plantão Emergencial 24/7</div><div style="font-size:13px;color:var(--soft)">Para agências de viagens · Resposta em &lt; 8 minutos</div></div>
+      </div>
+      <button class="btn-mint" style="padding:10px 22px;font-size:13px" onclick="go('emergency')">Saiba mais</button>
+    </div>
+  </div>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo"><div class="logo-dot"></div>VoaFácil</div>
+      <p>O SaaS de viagens mais completo do Brasil. 9 diferenciais. 50+ aéreas. Plantão 24/7.</p>
+    </div>
+    <div class="footer-col"><h4>Produto</h4><a href="#">Buscar voos</a><a href="#">Modo Sonho</a><a href="#">Erros de tarifa</a><a href="#">Combinador milhas</a><a href="#">Plantão 24/7</a></div>
+    <div class="footer-col"><h4>Para Agências</h4><a href="#">Plantão emergencial</a><a href="#">API REST</a><a href="#">White-label</a><a href="#">Gerente de conta</a></div>
+    <div class="footer-col"><h4>Empresa</h4><a href="#">Sobre nós</a><a href="#">Blog</a><a href="#">Afiliados</a><a href="#">Imprensa</a></div>
+    <div class="footer-col"><h4>Suporte</h4><a href="#">Central de ajuda</a><a href="#">Status</a><a href="#">Termos</a><a href="#">Privacidade</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 VoaFácil Tecnologia LTDA</span><span>🇧🇷 Feito com ❤️ no Brasil</span></div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 2 — DASHBOARD DO USUÁRIO (com todos os diferenciais)
+═══════════════════════════════════════════════════ -->
+<div class="screen" id="sc-dashboard">
+<div class="app">
+  <aside class="sb">
+    <div class="sb-head"><div class="logo" style="font-size:17px"><div class="logo-dot"></div>VoaFácil</div></div>
+    <nav class="sb-nav">
+      <button class="sbi on" onclick="setA(this)"><span class="ico">🏠</span> Início</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">✈️</span> Buscar Voos</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🔔</span> Alertas <span class="sbi-badge">5</span></button>
+      <div class="sb-sec">Diferenciais</div>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🗺️</span> Modo Sonho</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">⚡</span> Erros de Tarifa <span class="sbi-badge">3</span></button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🤖</span> IA Previsão</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">📅</span> Calendário Preços</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">💎</span> Minhas Milhas</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">👫</span> Split Amigos</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🔒</span> Preços Travados</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">💻</span> Modo Nômade</button>
+      <div class="sb-sec">Conta</div>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🎫</span> Minhas Viagens</button>
+      <button class="sbi" onclick="go('emergency')"><span class="ico">🚨</span> Plantão 24/7 <span class="sbi-badge rose">PRO</span></button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">💳</span> Meu Plano</button>
+    </nav>
+    <div class="sb-foot"><div class="sb-user"><div class="sb-av">LC</div><div><div class="sb-name">Lucas Carvalho</div><div class="sb-plan">Voyager Pro ✦</div></div></div></div>
+  </aside>
+  <main class="main">
+    <!-- AI Alert Banner -->
+    <div style="background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(244,63,94,.06));border:1px solid rgba(124,58,237,.25);border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px">
+      <div style="font-size:24px">🤖</div>
+      <div style="flex:1"><strong style="color:var(--violet2)">IA de Previsão:</strong> <span style="color:var(--text);font-size:14px">Seu alerta GRU→MIA está com preço <strong>ótimo agora</strong>. Com 87% de confiança, subirá R$320 nos próximos 3 dias.</span></div>
+      <button class="btn-flame" style="padding:8px 18px;font-size:13px;flex-shrink:0" onclick="go('results')">Comprar agora →</button>
+    </div>
+    <!-- Fare Error Alert -->
+    <div style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.3);border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px;animation:pulse-border 2s infinite">
+      <div style="font-size:22px">⚡</div>
+      <div style="flex:1"><strong style="color:var(--rose2)">ERRO DE TARIFA DETECTADO!</strong> <span style="font-size:13px;color:var(--text)">GRU→Tokyo (NRT) por <strong style="color:var(--rose)">R$480</strong> — normal é R$5.200. Confirmado. Você tem ~35min.</span></div>
+      <div style="font-family:var(--clash);font-size:18px;color:var(--amber);font-weight:700" id="countdown">34:52</div>
+      <button class="btn-mint" style="padding:8px 18px;font-size:13px;flex-shrink:0">Garantir agora!</button>
+    </div>
+
+    <div class="ph">
+      <div><div class="ph-title">Bom dia, Lucas! 👋</div><div class="ph-sub"><span class="live"></span>3 erros de tarifa ativos · 5 alertas monitorando</div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" style="font-size:13px;padding:8px 14px" onclick="go('land')">🗺️ Modo Sonho</button>
+        <button class="btn-flame" style="padding:8px 16px;font-size:13px" onclick="go('results')">🔍 Buscar voos</button>
+      </div>
+    </div>
+
+    <div class="stats4">
+      <div class="sc"><div class="sc-lbl">Economizado</div><div class="sc-val" style="color:var(--mint)">R$4.820</div><div class="sc-chg" style="color:var(--mint)">↑ R$1.290 este mês</div></div>
+      <div class="sc"><div class="sc-lbl">Milhas totais</div><div class="sc-val" style="color:var(--gold)">42.800</div><div class="sc-chg">LATAM + Smiles + Azul</div></div>
+      <div class="sc"><div class="sc-lbl">Erros captados</div><div class="sc-val" style="color:var(--rose)">3 ativos</div><div class="sc-chg">↑ 12 no último mês</div></div>
+      <div class="sc"><div class="sc-lbl">Preços travados</div><div class="sc-val" style="color:var(--violet2)">2</div><div class="sc-chg">1 expira em 6h</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px">
+
+      <!-- AI Price Forecast -->
+      <div class="ai-card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <span style="font-size:20px">🤖</span>
+          <div>
+            <div class="ctit" style="margin:0;font-size:14px">IA de Previsão — GRU→MIA</div>
+            <div style="font-size:12px;color:var(--soft)">Baseado em 14 meses de histórico</div>
+          </div>
+        </div>
+        <div class="ai-verdict">
+          <div class="ai-verdict-icon">📈</div>
+          <div>
+            <div class="ai-verdict-text" style="color:var(--rose)">Preço vai SUBIR</div>
+            <div class="ai-verdict-conf">Confiança: 87% · +R$320 em ~3 dias</div>
+          </div>
+        </div>
+        <div class="ai-graph">
+          <div class="ai-bar" style="height:55%;background:rgba(0,200,150,.4)"></div>
+          <div class="ai-bar" style="height:45%;background:rgba(0,200,150,.4)"></div>
+          <div class="ai-bar" style="height:60%;background:rgba(0,200,150,.4)"></div>
+          <div class="ai-bar" style="height:42%;background:rgba(0,200,150,.4)"></div>
+          <div class="ai-bar" style="height:70%;background:rgba(0,200,150,.4)"></div>
+          <div class="ai-bar" style="height:65%;background:rgba(255,77,26,.6)"></div>
+          <div class="ai-bar" style="height:72%;background:rgba(255,77,26,.6)"></div>
+          <div class="ai-bar ai-pred" style="height:80%;border-color:var(--rose);background:rgba(244,63,94,.15)"></div>
+          <div class="ai-bar ai-pred" style="height:88%;border-color:var(--rose);background:rgba(244,63,94,.15)"></div>
+          <div class="ai-bar ai-pred" style="height:95%;border-color:var(--rose);background:rgba(244,63,94,.15)"></div>
+        </div>
+        <div class="ai-graph-labels"><span>-7d</span><span>-5d</span><span>-3d</span><span>hoje</span><span>+3d (prev.)</span></div>
+        <button class="btn-flame" style="width:100%;padding:10px;font-size:13px;margin-top:14px" onclick="go('results')">Comprar R$1.290 antes que suba</button>
+      </div>
+
+      <!-- Calendar of Prices -->
+      <div class="card">
+        <div class="ctit">📅 Calendário de Preços — GRU→MIA <span class="cact">Mês cheio</span></div>
+        <div class="cal-grid">
+          <div class="cal-header">Dom</div><div class="cal-header">Seg</div><div class="cal-header">Ter</div><div class="cal-header">Qua</div><div class="cal-header">Qui</div><div class="cal-header">Sex</div><div class="cal-header">Sáb</div>
+          <div class="cal-day cal-exp"><div class="d">1</div><div class="p">R$1.8k</div></div>
+          <div class="cal-day cal-cheap"><div class="d">2</div><div class="p">R$890</div></div>
+          <div class="cal-day cal-cheap"><div class="d">3</div><div class="p">R$920</div></div>
+          <div class="cal-day cal-mid"><div class="d">4</div><div class="p">R$1.2k</div></div>
+          <div class="cal-day cal-mid"><div class="d">5</div><div class="p">R$1.1k</div></div>
+          <div class="cal-day cal-exp"><div class="d">6</div><div class="p">R$2.1k</div></div>
+          <div class="cal-day cal-exp"><div class="d">7</div><div class="p">R$1.9k</div></div>
+          <div class="cal-day cal-cheap"><div class="d">8</div><div class="p">R$850</div></div>
+          <div class="cal-day cal-cheap"><div class="d">9</div><div class="p">R$880</div></div>
+          <div class="cal-day cal-mid"><div class="d">10</div><div class="p">R$1.3k</div></div>
+          <div class="cal-day cal-cheap"><div class="d">11</div><div class="p">R$900</div></div>
+          <div class="cal-day cal-mid"><div class="d">12</div><div class="p">R$1.0k</div></div>
+          <div class="cal-day cal-exp"><div class="d">13</div><div class="p">R$2.4k</div></div>
+          <div class="cal-day cal-exp"><div class="d">14</div><div class="p">R$2.2k</div></div>
+          <div class="cal-day cal-today cal-cheap"><div class="d">15</div><div class="p">R$1.3k</div></div>
+          <div class="cal-day cal-cheap"><div class="d">16</div><div class="p">R$870</div></div>
+          <div class="cal-day cal-cheap"><div class="d">17</div><div class="p">R$840</div></div>
+          <div class="cal-day cal-mid"><div class="d">18</div><div class="p">R$1.1k</div></div>
+          <div class="cal-day cal-mid"><div class="d">19</div><div class="p">R$1.0k</div></div>
+          <div class="cal-day cal-exp"><div class="d">20</div><div class="p">R$1.9k</div></div>
+          <div class="cal-day cal-exp"><div class="d">21</div><div class="p">R$2.0k</div></div>
+        </div>
+        <div class="cal-legend">
+          <div class="cal-leg"><div class="cal-leg-dot" style="background:rgba(0,200,150,.3)"></div>Barato</div>
+          <div class="cal-leg"><div class="cal-leg-dot" style="background:rgba(245,158,11,.3)"></div>Médio</div>
+          <div class="cal-leg"><div class="cal-leg-dot" style="background:rgba(244,63,94,.3)"></div>Caro</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px">
+
+      <!-- Fare errors -->
+      <div class="card">
+        <div class="ctit">⚡ Erros de Tarifa Ativos <span class="cact">Ver histórico</span></div>
+        <div class="error-feed">
+          <div class="error-card new">
+            <div class="err-icon" style="background:rgba(244,63,94,.1)">🗾</div>
+            <div>
+              <div class="err-route">GRU → NRT</div>
+              <div class="err-info">Tokyo · AA · Direto</div>
+              <div class="err-timer">⏰ ~35min restantes</div>
+            </div>
+            <div class="err-prices">
+              <div class="err-normal">R$5.200</div>
+              <div class="err-error">R$480</div>
+              <div class="err-save">↓ -91% economia</div>
+            </div>
+          </div>
+          <div class="error-card">
+            <div class="err-icon" style="background:rgba(255,184,0,.1)">🗼</div>
+            <div>
+              <div class="err-route">BSB → CDG</div>
+              <div class="err-info">Paris · AF · 1 escala</div>
+              <div class="err-timer">⏰ ~2h restantes</div>
+            </div>
+            <div class="err-prices">
+              <div class="err-normal">R$4.800</div>
+              <div class="err-error">R$890</div>
+              <div class="err-save">↓ -81% economia</div>
+            </div>
+          </div>
+          <div class="error-card">
+            <div class="err-icon" style="background:rgba(33,150,243,.1)">🏙️</div>
+            <div>
+              <div class="err-route">GRU → JFK</div>
+              <div class="err-info">NY · UA · 1 escala</div>
+              <div class="err-timer">⏰ ~4h restantes</div>
+            </div>
+            <div class="err-prices">
+              <div class="err-normal">R$3.400</div>
+              <div class="err-error">R$620</div>
+              <div class="err-save">↓ -82% economia</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Miles calculator -->
+      <div class="card">
+        <div class="ctit">💎 Combinador de Milhas</div>
+        <div class="miles-programs">
+          <div class="miles-prog on">LATAM Pass</div>
+          <div class="miles-prog">Smiles</div>
+          <div class="miles-prog">TudoAzul</div>
+        </div>
+        <div class="miles-row" style="margin-top:14px">
+          <div class="miles-input-group">
+            <label>Milhas disponíveis</label>
+            <input value="15.000" oninput="calcMiles()">
+          </div>
+          <div class="miles-input-group">
+            <label>Preço do voo (R$)</label>
+            <input value="1.290" oninput="calcMiles()">
+          </div>
+        </div>
+        <div class="miles-result" id="miles-result">
+          <div class="miles-result-label">Custo efetivo usando milhas</div>
+          <div class="miles-result-value">R$680</div>
+          <div class="miles-result-sub">15.000 milhas (val. R$610) + R$70 em cash</div>
+        </div>
+        <button class="btn-violet" style="width:100%;padding:10px;font-size:13px;margin-top:12px">Ver como usar as milhas →</button>
+      </div>
+
+      <!-- Split + Price Lock -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="split-card">
+          <div class="ctit" style="margin-bottom:12px">👫 Split — Miami com amigos</div>
+          <div style="font-size:13px;color:var(--soft);margin-bottom:10px">GRU→MIA · 4 pessoas · 15 Abr</div>
+          <div class="split-friends">
+            <div class="split-friend">
+              <div class="split-av" style="background:linear-gradient(135deg,var(--flame),#8A0000)">LC</div>
+              <div><div class="split-name">Você (Lucas)</div></div>
+              <div class="split-amount">R$1.290</div>
+            </div>
+            <div class="split-friend">
+              <div class="split-av" style="background:linear-gradient(135deg,var(--mint),#006644)">AM</div>
+              <div><div class="split-name">Ana Maria</div><div class="split-status" style="color:var(--mint)">✓ Pago</div></div>
+              <div class="split-amount">R$1.290</div>
+            </div>
+            <div class="split-friend">
+              <div class="split-av" style="background:linear-gradient(135deg,var(--sky),#003388)">PF</div>
+              <div><div class="split-name">Pedro Farias</div><div class="split-status" style="color:var(--amber)">⏳ Aguardando</div></div>
+              <div class="split-amount">R$1.290</div>
+            </div>
+          </div>
+          <button class="btn-ghost" style="width:100%;padding:8px;font-size:12px;margin-top:8px">📨 Reenviar link para Pedro</button>
+        </div>
+        <div class="lock-card" style="padding:18px">
+          <div style="font-size:28px;margin-bottom:10px">🔒</div>
+          <div style="font-family:var(--clash);font-size:13px;font-weight:700;margin-bottom:6px">PREÇO TRAVADO — GRU→MIA</div>
+          <div style="font-family:var(--clash);font-size:32px;font-weight:700;color:var(--gold)" id="lock-time">05:42:18</div>
+          <div style="font-size:11px;color:var(--soft);margin-bottom:10px">restantes para decidir</div>
+          <div style="display:flex;gap:16px;justify-content:center;margin-bottom:14px">
+            <div style="text-align:center"><div style="font-size:11px;color:var(--soft)">Travado em</div><div style="font-family:var(--clash);font-size:18px;font-weight:700;color:var(--gold)">R$1.290</div></div>
+            <div style="text-align:center"><div style="font-size:11px;color:var(--soft)">Preço atual</div><div style="font-family:var(--clash);font-size:18px;font-weight:700;color:var(--rose)">R$1.490</div></div>
+          </div>
+          <button class="btn-flame" style="width:100%;padding:9px;font-size:13px">Comprar pelo preço travado R$1.290</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nomad Mode -->
+    <div class="card" style="margin-bottom:18px">
+      <div class="ctit">💻 Modo Nômade — Roteiro Otimizado por IA <span class="cact">Refazer cálculo</span></div>
+      <div style="font-size:13px;color:var(--soft);margin-bottom:14px">3 meses fora · Partindo de GRU · Orçamento: R$6.000 em voos</div>
+      <div class="nomad-route">
+        <div class="nomad-city"><div class="nomad-city-emoji">🇧🇷</div><div class="nomad-city-name">São Paulo</div><div class="nomad-city-cost">Partida</div></div>
+        <div class="nomad-arrow"><div class="nomad-arrow-line"></div><div class="nomad-arrow-price">R$2.180</div></div>
+        <div class="nomad-city"><div class="nomad-city-emoji">🇵🇹</div><div class="nomad-city-name">Lisboa</div><div class="nomad-city-cost">€1.200/mês</div></div>
+        <div class="nomad-arrow"><div class="nomad-arrow-line"></div><div class="nomad-arrow-price">R$980</div></div>
+        <div class="nomad-city"><div class="nomad-city-emoji">🇲🇦</div><div class="nomad-city-name">Marrakech</div><div class="nomad-city-cost">€600/mês</div></div>
+        <div class="nomad-arrow"><div class="nomad-arrow-line"></div><div class="nomad-arrow-price">R$1.420</div></div>
+        <div class="nomad-city"><div class="nomad-city-emoji">🇺🇦</div><div class="nomad-city-name">Tenerife</div><div class="nomad-city-cost">€900/mês</div></div>
+        <div class="nomad-arrow"><div class="nomad-arrow-line"></div><div class="nomad-arrow-price">R$1.290</div></div>
+        <div class="nomad-city" style="border-color:var(--mint)"><div class="nomad-city-emoji">🇧🇷</div><div class="nomad-city-name">São Paulo</div><div class="nomad-city-cost" style="color:var(--flame)">Total: R$5.870</div></div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <span class="badge bg-mint">💰 Total voos: R$5.870</span>
+        <span class="badge bg-sky">📅 3 meses · Jul–Set 2025</span>
+        <span class="badge bg-violet">🤖 Otimizado por IA</span>
+        <span class="badge bg-gold">✈ 4 trechos · 3 companhias</span>
+        <button class="btn-flame" style="margin-left:auto;padding:8px 18px;font-size:13px">Comprar todos os trechos</button>
+      </div>
+    </div>
+
+    <div class="demo-nav">
+      <span>🧭 Demo:</span>
+      <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('land')">🏠 Landing</button>
+      <button class="btn-flame" style="font-size:12px;padding:6px 12px" onclick="go('emergency')">🚨 Plantão 24/7 →</button>
+      <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('emergency-dash')">⚙️ Admin Emergências</button>
+      <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('admin')">📊 Admin Geral</button>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 3 — PLANTÃO EMERGENCIAL (Página de vendas)
+═══════════════════════════════════════════════════ -->
+<div class="screen" id="sc-emergency">
+<nav class="nav" style="position:relative">
+  <div class="logo" onclick="go('land')" style="cursor:pointer"><div class="logo-dot"></div>VoaFácil</div>
+  <div style="font-family:var(--clash);font-size:18px;font-weight:700;color:var(--rose)">🚨 Plantão Emergencial 24/7</div>
+  <button class="btn-ghost" style="padding:8px 16px;font-size:13px" onclick="go('land')">← Voltar</button>
+</nav>
+
+<div style="min-height:100vh;padding:90px 52px 60px">
+  <!-- Hero -->
+  <div style="text-align:center;padding:60px 20px">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.25);color:var(--rose2);padding:7px 18px;border-radius:100px;font-size:12px;font-weight:700;margin-bottom:24px">🚨 SERVIÇO PREMIUM PARA AGÊNCIAS DE VIAGENS</div>
+    <h1 style="font-family:var(--clash);font-size:clamp(36px,6vw,72px);font-weight:700;letter-spacing:-2.5px;max-width:860px;margin:0 auto 18px;line-height:1.04">Voo cancelado às 3h da manhã.<br><span style="color:var(--rose)">Quem você chama?</span></h1>
+    <p style="font-size:17px;color:var(--soft);max-width:580px;margin:0 auto 36px;line-height:1.75">Sua agência não pode perder clientes por causa de imprevistos fora do horário comercial. Nossa equipe especializada resolve em minutos — cancelamentos, conexões, hotéis, documentação e muito mais.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-mint" style="padding:15px 36px;font-size:16px" onclick="go('emergency-dash')">Acessar Central de Emergências</button>
+      <button class="btn-ghost" style="padding:14px 28px;font-size:15px">📞 Falar com especialista agora</button>
+    </div>
+  </div>
+
+  <!-- Incident types -->
+  <div style="max-width:1000px;margin:0 auto 80px">
+    <div style="text-align:center;margin-bottom:40px"><div class="sec-lbl" style="color:var(--rose);text-align:center">O que resolvemos</div><h2 style="font-family:var(--clash);font-size:38px;font-weight:700;letter-spacing:-1.5px">Qualquer imprevisto. A qualquer hora.</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <div class="diff-card" style="--accent:var(--rose)"><div class="diff-icon">✈️</div><div class="diff-title">Cancelamento de Voo</div><p class="diff-desc">Reacomodação imediata em voos alternativos, reembolsos, vouchers de hotel e transporte para os passageiros afetados.</p><div class="diff-highlight" style="border-color:var(--rose)">Tempo médio de resolução: 12 minutos</div></div>
+      <div class="diff-card" style="--accent:var(--amber)"><div class="diff-icon">🔗</div><div class="diff-title">Conexão Perdida</div><p class="diff-desc">Reagendamento automático da conexão, check-in no hotel de pernoite quando necessário e comunicação com a aérea.</p><div class="diff-highlight" style="border-color:var(--amber)">Cobertura em 180+ aeroportos no mundo</div></div>
+      <div class="diff-card" style="--accent:var(--sky)"><div class="diff-icon">🏨</div><div class="diff-title">Problema no Hotel</div><p class="diff-desc">Overbooking, quarto errado, pagamento duplicado, propriedade fechada — resolvemos direto com o hotel ou realocamos.</p><div class="diff-highlight" style="border-color:var(--sky)">Parceria com 800k propriedades globais</div></div>
+      <div class="diff-card" style="--accent:var(--violet2)"><div class="diff-icon">🛂</div><div class="diff-title">Problema de Documentação</div><p class="diff-desc">Passaporte vencido, visto incorreto, exigências de vacinação — orientamos e acionamos consulados quando necessário.</p><div class="diff-highlight" style="border-color:var(--violet2)">Base de dados de requisitos de 195 países</div></div>
+      <div class="diff-card" style="--accent:var(--mint)"><div class="diff-icon">💊</div><div class="diff-title">Emergência Médica</div><p class="diff-desc">Acionamento de seguro viagem, orientação de hospitais locais, retorno antecipado e comunicação com família.</p><div class="diff-highlight" style="border-color:var(--mint)">Parceria com 24 seguradoras de viagem</div></div>
+      <div class="diff-card" style="--accent:var(--gold)"><div class="diff-icon">💼</div><div class="diff-title">Bagagem Extraviada</div><p class="diff-desc">Abertura de PIR, acompanhamento de localização, reembolso de itens essenciais e entrega assim que localizada.</p><div class="diff-highlight" style="border-color:var(--gold)">Taxa de recuperação: 96% em 48h</div></div>
+    </div>
+  </div>
+
+  <!-- Plans -->
+  <div style="max-width:900px;margin:0 auto 80px">
+    <div style="text-align:center;margin-bottom:40px"><div class="sec-lbl" style="color:var(--rose);text-align:center">Planos do Plantão</div><h2 style="font-family:var(--clash);font-size:38px;font-weight:700;letter-spacing:-1.5px">Escolha seu nível de proteção</h2></div>
+    <div class="emrg-plans">
+      <div class="emrg-plan">
+        <div class="emrg-plan-name">Essencial</div>
+        <div class="emrg-plan-price"><sup style="font-size:18px">R$</sup>99</div>
+        <div class="emrg-plan-period">por mês · até 50 pax/mês</div>
+        <ul class="emrg-plan-feats">
+          <li>Suporte WhatsApp 24/7</li>
+          <li>Cancelamentos de voo</li>
+          <li>Tempo resposta &lt; 30min</li>
+          <li>1 agente dedicado</li>
+          <li>Histórico de incidentes</li>
+          <li class="no">Ligação direta de emergência</li>
+          <li class="no">Gerente de conta</li>
+          <li class="no">SLA garantido</li>
+        </ul>
+        <button class="plan-btn plan-btn-ghost">Assinar Essencial</button>
+      </div>
+      <div class="emrg-plan featured">
+        <div class="emrg-plan-badge">🔥 Mais contratado</div>
+        <div class="emrg-plan-name">Profissional</div>
+        <div class="emrg-plan-price"><sup style="font-size:18px">R$</sup>299</div>
+        <div class="emrg-plan-period">por mês · até 200 pax/mês</div>
+        <ul class="emrg-plan-feats">
+          <li>Suporte WhatsApp + App 24/7</li>
+          <li>Todos os tipos de incidente</li>
+          <li style="color:var(--rose2);font-weight:600">Resposta garantida &lt; 8min</li>
+          <li>Ligação direta de emergência</li>
+          <li>3 agentes especializados</li>
+          <li>Dashboard em tempo real</li>
+          <li>Relatório mensal de incidentes</li>
+          <li class="no">White-label</li>
+        </ul>
+        <button class="plan-btn btn-mint" style="padding:12px" onclick="go('emergency-dash')">Assinar Profissional</button>
+      </div>
+      <div class="emrg-plan">
+        <div class="emrg-plan-name">Enterprise</div>
+        <div class="emrg-plan-price"><sup style="font-size:18px">R$</sup>999</div>
+        <div class="emrg-plan-period">por mês · pax ilimitados</div>
+        <ul class="emrg-plan-feats">
+          <li>Tudo do Profissional</li>
+          <li>Linha exclusiva de emergências</li>
+          <li>Gerente de conta dedicado 24/7</li>
+          <li>White-label (sua marca)</li>
+          <li>Integração via API/webhook</li>
+          <li>SLA 99.9% com multa</li>
+          <li>Treinamento da equipe</li>
+          <li>Relatórios customizados</li>
+        </ul>
+        <button class="plan-btn plan-btn-ghost">Falar com vendas</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-nav" style="max-width:900px;margin:0 auto">
+    <span>🧭 Demo:</span>
+    <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('land')">🏠 Landing</button>
+    <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('dashboard')">📊 Dashboard</button>
+    <button class="btn-flame" style="font-size:12px;padding:6px 12px" onclick="go('emergency-dash')">⚙️ Central de Emergências →</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 4 — CENTRAL DE EMERGÊNCIAS (Painel Operacional)
+═══════════════════════════════════════════════════ -->
+<div class="screen" id="sc-emergency-dash">
+<div class="app">
+  <aside class="sb">
+    <div class="sb-head">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="logo" style="font-size:16px"><div class="logo-dot" style="background:var(--rose);box-shadow:0 0 8px var(--rose)"></div>VoaFácil</div>
+        <span class="badge bg-rose" style="font-size:10px">PLANTÃO</span>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <div style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:10px;padding:12px;margin-bottom:8px;text-align:center">
+        <div style="font-size:10px;color:var(--rose);font-weight:700;margin-bottom:2px">CENTRAL ATIVA</div>
+        <div style="font-family:var(--clash);font-size:20px;font-weight:700;color:var(--rose)" id="clock">03:14:22</div>
+        <div style="font-size:10px;color:var(--soft)">Plantão em andamento</div>
+      </div>
+      <button class="sbi on" onclick="setA(this)"><span class="ico">🚨</span> Central ao vivo <span class="sbi-badge rose">12</span></button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">📋</span> Fila de tickets <span class="sbi-badge rose">5</span></button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">✅</span> Resolvidos hoje</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">👥</span> Agentes online</button>
+      <div class="sb-sec">Ferramentas</div>
+      <button class="sbi" onclick="setA(this)"><span class="ico">✈️</span> Reacomodar voo</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🏨</span> Reservar hotel emergência</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">📞</span> Ligar para aérea</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">📨</span> Contatar passageiro</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🛂</span> Consultar visto/docs</button>
+      <div class="sb-sec">Gestão</div>
+      <button class="sbi" onclick="setA(this)"><span class="ico">📊</span> Dashboard agências</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">📈</span> SLA e métricas</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🔔</span> Configurar alertas</button>
+    </nav>
+    <div class="sb-foot"><div class="sb-user"><div class="sb-av" style="background:linear-gradient(135deg,var(--rose),#7A0020)">AG</div><div><div class="sb-name">Agente Renata</div><div class="sb-plan" style="color:var(--rose)">Plantão ativo</div></div></div></div>
+  </aside>
+
+  <main class="main">
+    <!-- Live status bar -->
+    <div style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);border-radius:12px;padding:13px 18px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px"><span class="live red"></span><strong style="color:var(--rose);font-size:14px">PLANTÃO ATIVO</strong></div>
+      <div style="font-size:13px">🕐 <strong>03:14:22</strong> — turno da madrugada</div>
+      <div style="font-size:13px;color:var(--soft)">5 agentes online · 12 incidentes ativos · 3 críticos</div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <span class="badge bg-rose">🔴 3 Críticos</span>
+        <span class="badge bg-amber">🟡 5 Em andamento</span>
+        <span class="badge bg-mint">🟢 4 Aguardando</span>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div><div class="ph-title">Central de Emergências 24/7</div><div class="ph-sub">Incidentes em tempo real · Plantão madrugada</div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" style="font-size:13px;padding:8px 14px">📊 Relatório do turno</button>
+        <button class="btn-mint" style="padding:9px 18px;font-size:13px">+ Abrir ticket</button>
+      </div>
+    </div>
+
+    <!-- Emergency counters -->
+    <div class="ec-grid">
+      <div class="ec-card red"><div class="ec-num">3</div><div class="ec-label">Incidentes críticos</div><div class="ec-trend">↑ +2 na última hora</div></div>
+      <div class="ec-card amber"><div class="ec-num">5</div><div class="ec-label">Em andamento</div><div class="ec-trend">Tempo médio: 18min</div></div>
+      <div class="ec-card green"><div class="ec-num">47</div><div class="ec-label">Resolvidos hoje</div><div class="ec-trend">↑ Taxa de sucesso: 98%</div></div>
+    </div>
+
+    <div class="emrg-dash-grid">
+      <!-- Sidebar operacional -->
+      <div class="emrg-sidebar">
+        <div class="emrg-sidebar-header">
+          <div style="font-size:11px;margin-bottom:4px">TEMPO MÉDIO DE RESPOSTA</div>
+          <div style="font-family:var(--clash);font-size:32px;font-weight:700">7m 42s</div>
+          <div style="font-size:11px;opacity:.8">SLA: &lt; 8 min ✓</div>
+        </div>
+        <div class="emrg-sb-stat"><div class="emrg-sb-stat-num" style="color:var(--mint)">98.4%</div><div class="emrg-sb-stat-label">Taxa de resolução</div></div>
+        <div class="emrg-sb-stat"><div class="emrg-sb-stat-num" style="color:var(--sky)">340</div><div class="emrg-sb-stat-label">Agências cadastradas</div></div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--soft);margin:8px 0 6px">Agentes Online Agora</div>
+        <div class="agent-card">
+          <div class="agent-av" style="background:linear-gradient(135deg,var(--flame),#8A0000)">RF</div>
+          <div><div class="agent-name">Renata F.</div><div class="agent-status-text"><span class="online-dot green"></span>Disponível</div></div>
+          <div class="agent-load"><span style="color:var(--text)">2</span><div style="font-size:10px;color:var(--soft)">tickets</div></div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-av" style="background:linear-gradient(135deg,var(--sky),#003388)">MO</div>
+          <div><div class="agent-name">Marcos O.</div><div class="agent-status-text"><span class="online-dot amber"></span>Em ligação</div></div>
+          <div class="agent-load"><span style="color:var(--amber)">3</span><div style="font-size:10px;color:var(--soft)">tickets</div></div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-av" style="background:linear-gradient(135deg,var(--mint),#006644)">JS</div>
+          <div><div class="agent-name">Julia S.</div><div class="agent-status-text"><span class="online-dot green"></span>Disponível</div></div>
+          <div class="agent-load"><span style="color:var(--text)">1</span><div style="font-size:10px;color:var(--soft)">ticket</div></div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-av" style="background:linear-gradient(135deg,var(--violet),#3A0080)">TC</div>
+          <div><div class="agent-name">Thiago C.</div><div class="agent-status-text"><span class="online-dot amber"></span>Resolvendo</div></div>
+          <div class="agent-load"><span style="color:var(--rose)">4</span><div style="font-size:10px;color:var(--soft)">tickets</div></div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-av" style="background:linear-gradient(135deg,var(--gold),#7A5000)">PL</div>
+          <div><div class="agent-name">Paula L.</div><div class="agent-status-text"><span class="online-dot green"></span>Disponível</div></div>
+          <div class="agent-load"><span style="color:var(--text)">1</span><div style="font-size:10px;color:var(--soft)">ticket</div></div>
+        </div>
+      </div>
+
+      <!-- Tickets Feed -->
+      <div class="emrg-ticket-feed">
+
+        <div class="emrg-ticket priority-1">
+          <div class="et-header">
+            <span class="et-id">#EM-20250315-0041</span>
+            <span class="badge bg-rose">🔴 P1 — CRÍTICO</span>
+            <span class="et-time">há 4min</span>
+          </div>
+          <div class="et-type">✈️ Cancelamento de Voo — American Airlines AA906</div>
+          <div class="et-agency">Agência: <strong>Viagens Mundo LTDA</strong> · Plano Enterprise</div>
+          <div class="et-detail">
+            Voo GRU→MIA de 08:15h cancelado pela AA devido a problema técnico na aeronave. <strong>8 passageiros afetados</strong>, incluindo 2 menores desacompanhados. Próximo voo disponível na AA: amanhã 08:15. LATAM tem voo hoje às 23:30 com disponibilidade. Hotel no aeroporto necessário para todos os pax.
+          </div>
+          <div class="et-pax">👥 Pax: <strong>Ana Lima (menor), João Lima (menor), Carlos Motta, Fernanda Motta + 4</strong></div>
+          <div class="sla-bar"><div class="sla-fill" style="width:52%;background:var(--rose)"></div></div>
+          <div class="sla-label"><span>⏰ SLA: 8min — 4min restantes</span><span style="color:var(--rose)">URGENTE</span></div>
+          <div class="et-actions">
+            <button class="et-btn et-btn-assign">⚡ Assumir agora</button>
+            <button class="et-btn et-btn-view">✈ Buscar voos alternativos</button>
+            <button class="et-btn et-btn-view">🏨 Reservar hotel</button>
+            <button class="et-btn et-btn-view">📞 Ligar AA</button>
+          </div>
+        </div>
+
+        <div class="emrg-ticket priority-1">
+          <div class="et-header">
+            <span class="et-id">#EM-20250315-0040</span>
+            <span class="badge bg-rose">🔴 P1 — CRÍTICO</span>
+            <span class="et-time">há 12min</span>
+          </div>
+          <div class="et-type">🔗 Conexão Perdida — Passageiros em Lisboa</div>
+          <div class="et-agency">Agência: <strong>Explore Turismo</strong> · Plano Profissional</div>
+          <div class="et-detail">
+            3 passageiros perderam conexão em LIS para GRU devido ao atraso do voo de origem (Madrid). Próxima conexão disponível em 18h. Necessidade de hotel e voucher de alimentação. TAP deve arcar com custos per Regulamento (UE) 261/2004.
+          </div>
+          <div class="et-pax">👥 Pax: <strong>Roberto Silva, Maria Aparecida, Pedro Henrique</strong></div>
+          <div class="sla-bar"><div class="sla-fill" style="width:78%;background:var(--amber)"></div></div>
+          <div class="sla-label"><span>⏰ SLA: 8min — Em andamento</span><span style="color:var(--amber)">Renata F. · atribuído</span></div>
+          <div class="et-actions">
+            <button class="et-btn et-btn-assign" style="background:var(--amber)">📋 Ver andamento</button>
+            <button class="et-btn et-btn-view">🏨 Hotel TAP</button>
+            <button class="et-btn et-btn-view">📨 Atualizar pax</button>
+          </div>
+        </div>
+
+        <div class="emrg-ticket priority-2">
+          <div class="et-header">
+            <span class="et-id">#EM-20250315-0039</span>
+            <span class="badge bg-amber">🟡 P2 — MÉDIO</span>
+            <span class="et-time">há 28min</span>
+          </div>
+          <div class="et-type">🏨 Overbooking Hotel — Cancún</div>
+          <div class="et-agency">Agência: <strong>Sol e Mar Viagens</strong> · Plano Essencial</div>
+          <div class="et-detail">
+            Hotel Riu Cancún informou overbooking para chegada desta noite. Casal + 2 filhos sem acomodação após voo de 9h. Hotel deve realocar em propriedade equivalente ou superior. Marriott e Hyatt têm disponibilidade na mesma região.
+          </div>
+          <div class="et-pax">👥 Pax: <strong>Família Rodrigues (4 pessoas)</strong></div>
+          <div class="sla-bar"><div class="sla-fill" style="width:100%;background:var(--mint)"></div></div>
+          <div class="sla-label"><span>✅ SLA cumprido — resolução em andamento</span><span style="color:var(--mint)">Julia S. · Marcos O.</span></div>
+          <div class="et-actions">
+            <button class="et-btn et-btn-assign" style="background:var(--sky)">📋 Ver resolução</button>
+            <button class="et-btn et-btn-view">🏨 Alternativas Cancún</button>
+          </div>
+        </div>
+
+        <div class="emrg-ticket priority-3">
+          <div class="et-header">
+            <span class="et-id">#EM-20250315-0038</span>
+            <span class="badge bg-mint">🟢 P3 — BAIXO</span>
+            <span class="et-time">há 45min · resolvido</span>
+          </div>
+          <div class="et-type">✅ Bagagem Extraviada — Resolvido</div>
+          <div class="et-agency">Agência: <strong>Premium Travel</strong> · Plano Enterprise</div>
+          <div class="et-detail">
+            Bagagem localizada em Frankfurt. Entrega programada para o hotel em Paris amanhã até 14h. Pax recebeu voucher de R$400 para itens essenciais conforme direito do passageiro.
+          </div>
+          <div class="sla-bar"><div class="sla-fill" style="width:100%;background:var(--mint)"></div></div>
+          <div class="sla-label"><span>✅ Resolvido em 6 minutos</span><span style="color:var(--mint)">Paula L.</span></div>
+          <div class="et-actions">
+            <button class="et-btn et-btn-view" style="flex:none;width:auto;padding:8px 16px">📋 Ver relatório</button>
+            <button class="et-btn et-btn-view" style="flex:none;width:auto;padding:8px 16px">📨 Enviar resumo para agência</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right panel: quick tools -->
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <div class="ctit" style="font-size:13px">⚡ Ações rápidas</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--navy);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;width:100%;text-align:left" onmouseover="this.style.borderColor='var(--flame)'" onmouseout="this.style.borderColor='var(--border)'"><span style="font-size:18px">✈️</span>Buscar voos alternativos</button>
+            <button style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--navy);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;width:100%;text-align:left" onmouseover="this.style.borderColor='var(--flame)'" onmouseout="this.style.borderColor='var(--border)'"><span style="font-size:18px">🏨</span>Reservar hotel emergência</button>
+            <button style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--navy);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;width:100%;text-align:left" onmouseover="this.style.borderColor='var(--flame)'" onmouseout="this.style.borderColor='var(--border)'"><span style="font-size:18px">📞</span>Ligar para aérea (roteiro)</button>
+            <button style="display:flex;align-items:center;gap:10deg;padding:11px 12px;background:var(--navy);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;width:100%;text-align:left" onmouseover="this.style.borderColor='var(--flame)'" onmouseout="this.style.borderColor='var(--border)'"><span style="font-size:18px;margin-right:10px">💬</span>WhatsApp para passageiro</button>
+            <button style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--navy);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;width:100%;text-align:left" onmouseover="this.style.borderColor='var(--flame)'" onmouseout="this.style.borderColor='var(--border)'"><span style="font-size:18px">🛡️</span>Acionar seguro viagem</button>
+            <button style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--navy);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;width:100%;text-align:left" onmouseover="this.style.borderColor='var(--flame)'" onmouseout="this.style.borderColor='var(--border)'"><span style="font-size:18px">🛂</span>Consultar requisitos de visto</button>
+            <button style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--navy);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;width:100%;text-align:left" onmouseover="this.style.borderColor='var(--flame)'" onmouseout="this.style.borderColor='var(--border)'"><span style="font-size:18px">📋</span>Gerar relatório de incidente</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="ctit" style="font-size:13px">📊 Métricas do turno</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center"><span style="color:var(--soft)">Tickets abertos</span><span class="badge bg-rose">12</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center"><span style="color:var(--soft)">Resolvidos hoje</span><span class="badge bg-mint">47</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center"><span style="color:var(--soft)">Tempo médio</span><span style="font-weight:600;color:var(--mint)">7m 42s</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center"><span style="color:var(--soft)">SLA cumprido</span><span style="font-weight:600;color:var(--mint)">97.8%</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center"><span style="color:var(--soft)">Satisfação pax</span><span style="font-weight:600;color:var(--gold)">4.9/5 ⭐</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;align-items:center"><span style="color:var(--soft)">Agências atendidas</span><span style="font-weight:600">23 agências</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="ctit" style="font-size:13px">🌐 Status aéreas agora</div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(37,51,82,.4)"><span>American Airlines</span><span class="badge bg-mint">● Normal</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(37,51,82,.4)"><span>LATAM</span><span class="badge bg-mint">● Normal</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(37,51,82,.4)"><span>GOL</span><span class="badge bg-amber">⚠ Atrasos GRU</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(37,51,82,.4)"><span>Azul</span><span class="badge bg-mint">● Normal</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0"><span>TAP Portugal</span><span class="badge bg-amber">⚠ Greve parcial</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-nav">
+      <span>🧭 Demo:</span>
+      <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('land')">🏠 Landing</button>
+      <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('dashboard')">📊 Dashboard</button>
+      <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('emergency')">🚨 Vender Plantão</button>
+      <button class="btn-flame" style="font-size:12px;padding:6px 12px" onclick="go('admin')">⚙️ Admin Geral →</button>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 5 — ADMIN GERAL
+═══════════════════════════════════════════════════ -->
+<div class="screen" id="sc-admin">
+<div class="app">
+  <aside class="sb">
+    <div class="sb-head"><div style="display:flex;align-items:center;gap:8px"><div class="logo" style="font-size:16px"><div class="logo-dot"></div>VoaFácil</div><span class="badge bg-rose" style="font-size:9px">ADMIN</span></div></div>
+    <nav class="sb-nav">
+      <button class="sbi on" onclick="setA(this)"><span class="ico">📡</span> Overview</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">👥</span> Usuários</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">💰</span> Assinaturas</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">✈️</span> Buscas</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">⚡</span> Erros de tarifa</button>
+      <div class="sb-sec">Plantão</div>
+      <button class="sbi" onclick="go('emergency-dash')"><span class="ico">🚨</span> Central ao vivo <span class="sbi-badge rose">12</span></button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">📊</span> SLA e métricas</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🏢</span> Agências</button>
+      <div class="sb-sec">APIs</div>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🌐</span> Amadeus</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">🔍</span> Skyscanner</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">💬</span> WhatsApp</button>
+      <div class="sb-sec">Sistema</div>
+      <button class="sbi" onclick="setA(this)"><span class="ico">📈</span> Analytics</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">⚙️</span> Config</button>
+      <button class="sbi" onclick="setA(this)"><span class="ico">⚠️</span> Suporte <span class="sbi-badge">5</span></button>
+    </nav>
+    <div class="sb-foot"><div class="sb-user"><div class="sb-av" style="background:linear-gradient(135deg,var(--rose),#550020)">AD</div><div><div class="sb-name">Admin Root</div><div class="sb-plan" style="color:var(--rose)">Super Admin</div></div></div></div>
+  </aside>
+  <main class="main">
+    <div style="background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.2);border-radius:10px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;font-size:13px">
+      <span>🚨 <strong style="color:var(--rose)">Plantão ativo:</strong> 3 incidentes críticos · 5 agentes online · SLA 97.8%</span>
+      <button class="btn-ghost" style="font-size:12px;padding:6px 14px" onclick="go('emergency-dash')">Ver central →</button>
+    </div>
+    <div class="ph"><div><div class="ph-title">Painel Admin Geral</div><div class="ph-sub"><span class="live"></span>Tempo real · MRR atualizado</div></div><div style="display:flex;gap:8px"><button class="btn-ghost" style="font-size:13px;padding:8px 14px">📤 Exportar</button><button class="btn-flame" style="font-size:13px;padding:9px 16px">🔥 Nova promo VIP</button></div></div>
+    <div class="stats4">
+      <div class="sc"><div class="sc-lbl">MRR Total</div><div class="sc-val" style="color:var(--flame)">R$142k</div><div class="sc-chg" style="color:var(--mint)">↑ 41% este mês</div></div>
+      <div class="sc"><div class="sc-lbl">Usuários ativos</div><div class="sc-val">84.200</div><div class="sc-chg" style="color:var(--mint)">↑ 7.800 novos</div></div>
+      <div class="sc"><div class="sc-lbl">Agências plantão</div><div class="sc-val" style="color:var(--rose)">340</div><div class="sc-chg" style="color:var(--mint)">↑ 42 este mês</div></div>
+      <div class="sc"><div class="sc-lbl">Buscas hoje</div><div class="sc-val">284k</div><div class="sc-chg">↑ 18% vs ontem</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+      <div class="sc"><div class="sc-lbl">Erros tarifa captados</div><div class="sc-val" style="color:var(--rose)">8</div><div class="sc-chg">3 ativos agora</div></div>
+      <div class="sc"><div class="sc-lbl">Alertas disparados hoje</div><div class="sc-val" style="color:var(--sky)">68k</div><div class="sc-chg">WhatsApp + email</div></div>
+      <div class="sc"><div class="sc-lbl">LTV/CAC</div><div class="sc-val" style="color:var(--mint)">22.4x</div><div class="sc-chg" style="color:var(--mint)">↑ excelente</div></div>
+      <div class="sc"><div class="sc-lbl">ARR Projetado</div><div class="sc-val">R$1.7M</div><div class="sc-chg" style="color:var(--mint)">↑ crescendo</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 280px;gap:18px">
+      <div class="card">
+        <div class="ctit">💰 Receita por produto <span class="cact">Relatório completo</span></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:var(--soft)">Assinaturas SaaS</span><span style="font-weight:600">R$72.800 <span style="font-size:11px;color:var(--soft)">51%</span></span></div><div style="height:6px;background:var(--border);border-radius:3px"><div style="height:100%;width:51%;background:var(--flame);border-radius:3px"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:var(--soft)">Plantão Emergencial</span><span style="font-weight:600">R$42.100 <span style="font-size:11px;color:var(--soft)">30%</span></span></div><div style="height:6px;background:var(--border);border-radius:3px"><div style="height:100%;width:30%;background:var(--rose);border-radius:3px"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:var(--soft)">Comissões afiliados</span><span style="font-weight:600">R$18.400 <span style="font-size:11px;color:var(--soft)">13%</span></span></div><div style="height:6px;background:var(--border);border-radius:3px"><div style="height:100%;width:13%;background:var(--mint);border-radius:3px"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:var(--soft)">Seguro de preço</span><span style="font-weight:600">R$8.700 <span style="font-size:11px;color:var(--soft)">6%</span></span></div><div style="height:6px;background:var(--border);border-radius:3px"><div style="height:100%;width:6%;background:var(--gold);border-radius:3px"></div></div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card"><div class="ctit" style="font-size:13px">📊 SaaS Métricas</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--soft)">Churn mensal</span><span class="badge bg-mint">1.2%</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--soft)">NPS Score</span><span class="badge bg-gold">78</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--soft)">Uptime</span><span style="color:var(--mint);font-weight:600">99.96%</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--soft)">ARPU</span><span style="font-weight:600">R$168</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--soft)">Plantão SLA</span><span style="color:var(--mint);font-weight:600">97.8% ✓</span></div>
+          </div>
+        </div>
+        <div class="card"><div class="ctit" style="font-size:13px">🌐 APIs status</div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(37,51,82,.4)"><span>Amadeus GDS</span><span class="badge bg-mint">● Online</span></div>
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(37,51,82,.4)"><span>Skyscanner</span><span class="badge bg-mint">● Online</span></div>
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(37,51,82,.4)"><span>WhatsApp API</span><span class="badge bg-mint">● Online</span></div>
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(37,51,82,.4)"><span>Travelpayouts</span><span class="badge bg-amber">⚠ Lento</span></div>
+            <div style="display:flex;justify-content:space-between;padding:5px 0"><span>Stripe</span><span class="badge bg-mint">● Online</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="demo-nav">
+      <span>🧭 Demo:</span>
+      <button class="btn-flame" style="font-size:12px;padding:6px 12px" onclick="go('land')">🏠 Landing</button>
+      <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('dashboard')">📊 Dashboard</button>
+      <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('emergency')">🚨 Plantão Vendas</button>
+      <button class="btn-ghost" style="font-size:12px;padding:6px 12px" onclick="go('emergency-dash')">⚙️ Central Emergências</button>
+    </div>
+  </main>
+</div>
+</div>
+
+<script>
+// Navigation
+const screens = {land:'sc-land',dashboard:'sc-dashboard',emergency:'sc-emergency','emergency-dash':'sc-emergency-dash',results:'sc-land',admin:'sc-admin'};
+function go(s){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  const id=screens[s]||'sc-land';
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  if(s==='results'){setTimeout(()=>{alert('Resultados de Busca está integrado na landing para fins de demo. Acesse o arquivo voafacil-saas.html para ver a tela completa de resultados!');},100);}
+}
+function setA(el){el.closest('.sb-nav').querySelectorAll('.sbi').forEach(i=>i.classList.remove('on'));el.classList.add('on');}
+document.querySelectorAll('.stab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.stab').forEach(x=>x.classList.remove('on'));t.classList.add('on');});});
+
+// Countdown - fare error timer
+let seconds=2092;
+setInterval(()=>{
+  if(seconds>0){seconds--;const m=Math.floor(seconds/60),s=seconds%60;const el=document.getElementById('countdown');if(el)el.textContent=`${m}:${s.toString().padStart(2,'0')}`;}
+},1000);
+
+// Price lock timer
+let lockSeconds=20538;
+setInterval(()=>{
+  if(lockSeconds>0){lockSeconds--;const h=Math.floor(lockSeconds/3600),m=Math.floor((lockSeconds%3600)/60),s=lockSeconds%60;const el=document.getElementById('lock-time');if(el)el.textContent=`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;}
+},1000);
+
+// Clock
+function updateClock(){
+  const now=new Date();const h=now.getHours().toString().padStart(2,'0'),m=now.getMinutes().toString().padStart(2,'0'),s=now.getSeconds().toString().padStart(2,'0');
+  const el=document.getElementById('clock');if(el)el.textContent=`${h}:${m}:${s}`;
+}
+setInterval(updateClock,1000);updateClock();
+
+// Miles calculator
+function calcMiles(){
+  const miles=parseFloat(document.querySelector('.miles-input-group:first-child input')?.value?.replace(',','.'))||0;
+  const price=parseFloat(document.querySelector('.miles-input-group:last-child input')?.value?.replace(',','.'))||0;
+  const mileValue=miles*0.0407;const cash=Math.max(0,price-mileValue);
+  const el=document.getElementById('miles-result');
+  if(el){el.querySelector('.miles-result-value').textContent=`R$${cash.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}`;el.querySelector('.miles-result-sub').textContent=`${miles.toLocaleString('pt-BR')} milhas (val. R$${mileValue.toFixed(0)}) + R$${cash.toFixed(0)} em cash`;}
+}
+</script>
+</body>
+</html>
