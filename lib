@@ -1,1 +1,241 @@
 
+// lib/emergency/engine.ts
+// Motor do Plantão Emergencial 24/7
+
+import { createAdminClient } from '@/lib/supabase/server'
+import { sendWhatsAppAlert } from '@/lib/notifications'
+import type { EmergencyTicket, TicketPriority, IncidentType } from '@/types/emergency'
+
+// ── Definição de prioridades ─────────────────────────────────────────────────
+export const PRIORITY_SLA: Record<TicketPriority, number> = {
+  P1: 8 * 60,    // 8 minutos — crítico
+  P2: 20 * 60,   // 20 minutos — médio
+  P3: 60 * 60,   // 1 hora — baixo
+}
+
+export const INCIDENT_PRIORITY: Record<IncidentType, TicketPriority> = {
+  flight_cancellation:  'P1',
+  missed_connection:    'P1',
+  emergency_medical:    'P1',
+  overbooking_hotel:    'P2',
+  lost_baggage:         'P2',
+  documentation_issue:  'P2',
+  refund_dispute:       'P3',
+  other:                'P3',
+}
+
+// ── Criar ticket de emergência ───────────────────────────────────────────────
+export async function createEmergencyTicket(data: {
+  agencyId: string
+  incidentType: IncidentType
+  description: string
+  passengers: { name: string; document?: string }[]
+  flightNumber?: string
+  route?: string
+  contactPhone: string
+  contactEmail?: string
+}) {
+  const supabase = await createAdminClient()
+  const priority = INCIDENT_PRIORITY[data.incidentType]
+  const slaDeadline = new Date(Date.now() + PRIORITY_SLA[priority] * 1000)
+
+  const ticketNumber = `EM-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${String(Math.floor(Math.random()*9999)+1).padStart(4,'0')}`
+
+  const { data: ticket, error } = await supabase
+    .from('emergency_tickets')
+    .insert({
+      ticket_number:  ticketNumber,
+      agency_id:      data.agencyId,
+      incident_type:  data.incidentType,
+      priority,
+      status:         'open',
+      description:    data.description,
+      passengers:     data.passengers,
+      flight_number:  data.flightNumber,
+      route:          data.route,
+      contact_phone:  data.contactPhone,
+      contact_email:  data.contactEmail,
+      sla_deadline:   slaDeadline.toISOString(),
+    })
+    .select()
+    .single()
+
+  if (error) throw error
+
+  // Notificar agentes disponíveis
+  await notifyAvailableAgents(ticket)
+
+  // Confirmar para a agência
+  await sendWhatsAppAlert(data.contactPhone, {
+    userName: 'Equipe',
+    origin: '', destination: '', price: 0, oldPrice: 0, dropPercent: 0,
+    airline: '', flightNumber: data.flightNumber ?? '',
+    departureAt: '', seatsLeft: 0,
+    bookingUrl: `https://app.voafacil.com.br/emergencia/${ticket.id}`,
+    // override message:
+    _customMessage: buildTicketConfirmationMessage(ticket, priority),
+  } as any)
+
+  return ticket
+}
+
+function buildTicketConfirmationMessage(ticket: any, priority: TicketPriority): string {
+  const slaMinutes = PRIORITY_SLA[priority] / 60
+  return [
+    `🚨 *VoaFácil Plantão Emergencial*`,
+    ``,
+    `✅ Ticket aberto: *${ticket.ticket_number}*`,
+    `🔴 Prioridade: *${priority}*`,
+    `⏰ Tempo de resposta garantido: *${slaMinutes} minutos*`,
+    ``,
+    `Nossa equipe já foi notificada e está trabalhando no seu caso.`,
+    ``,
+    `📱 Acompanhe em tempo real:`,
+    `https://app.voafacil.com.br/emergencia/${ticket.id}`,
+    ``,
+    `_Em caso de urgência adicional, responda esta mensagem._`,
+  ].join('\n')
+}
+
+// ── Notificar agentes disponíveis ────────────────────────────────────────────
+async function notifyAvailableAgents(ticket: any) {
+  const supabase = await createAdminClient()
+
+  // Pega agentes online com menor carga de trabalho
+  const { data: agents } = await supabase
+    .from('emergency_agents')
+    .select('*')
+    .eq('status', 'available')
+    .order('active_tickets', { ascending: true })
+    .limit(3)
+
+  for (const agent of agents ?? []) {
+    await sendWhatsAppAlert(agent.phone, {
+      _customMessage: [
+        `🚨 *NOVO TICKET ${ticket.priority}* — VoaFácil Plantão`,
+        ``,
+        `Ticket: *${ticket.ticket_number}*`,
+        `Tipo: ${ticket.incident_type}`,
+        `Rota: ${ticket.route ?? 'N/A'}`,
+        ``,
+        `👉 https://app.voafacil.com.br/admin/emergencia/${ticket.id}`,
+      ].join('\n'),
+    } as any)
+  }
+}
+
+// ── Monitorar SLA ────────────────────────────────────────────────────────────
+export async function checkSLABreaches() {
+  const supabase = await createAdminClient()
+  const now = new Date()
+
+  // Tickets que violaram SLA ou estão a 2 minutos de violar
+  const { data: atRisk } = await supabase
+    .from('emergency_tickets')
+    .select('*, emergency_agents(phone, name)')
+    .in('status', ['open', 'assigned'])
+    .lt('sla_deadline', new Date(now.getTime() + 2 * 60 * 1000).toISOString())
+
+  for (const ticket of atRisk ?? []) {
+    const isBreached = new Date(ticket.sla_deadline) < now
+
+    if (isBreached && !ticket.sla_breached) {
+      // Marcar como violado + escalar
+      await supabase.from('emergency_tickets').update({ sla_breached: true }).eq('id', ticket.id)
+      await escalateToManager(ticket)
+    }
+  }
+
+  return { checked: atRisk?.length ?? 0 }
+}
+
+async function escalateToManager(ticket: any) {
+  const managerPhone = process.env.EMERGENCY_MANAGER_PHONE!
+  await sendWhatsAppAlert(managerPhone, {
+    _customMessage: [
+      `⚠️ *SLA VIOLADO — VoaFácil Plantão*`,
+      ``,
+      `Ticket *${ticket.ticket_number}* (${ticket.priority}) excedeu o SLA.`,
+      `Tipo: ${ticket.incident_type}`,
+      `Rota: ${ticket.route}`,
+      ``,
+      `⚡ Ação imediata necessária:`,
+      `https://app.voafacil.com.br/admin/emergencia/${ticket.id}`,
+    ].join('\n'),
+  } as any)
+}
+
+// ── Resolver ticket ──────────────────────────────────────────────────────────
+export async function resolveTicket(ticketId: string, agentId: string, resolution: {
+  summary: string
+  actionsTaken: string[]
+  cost?: number
+}) {
+  const supabase = await createAdminClient()
+
+  const { data: ticket } = await supabase
+    .from('emergency_tickets')
+    .select('*, agencies(name, contact_phone)')
+    .eq('id', ticketId)
+    .single()
+
+  const resolvedAt = new Date()
+  const responseTime = Math.round((resolvedAt.getTime() - new Date(ticket.created_at).getTime()) / 1000)
+
+  await supabase.from('emergency_tickets').update({
+    status:          'resolved',
+    resolved_at:     resolvedAt.toISOString(),
+    resolved_by:     agentId,
+    resolution:      resolution.summary,
+    actions_taken:   resolution.actionsTaken,
+    resolution_cost: resolution.cost ?? 0,
+    response_time_seconds: responseTime,
+  }).eq('id', ticketId)
+
+  // Notificar agência
+  const minutes = Math.round(responseTime / 60)
+  await sendWhatsAppAlert(ticket.agencies.contact_phone, {
+    _customMessage: [
+      `✅ *Ticket resolvido — VoaFácil Plantão*`,
+      ``,
+      `Ticket: *${ticket.ticket_number}*`,
+      `⏱️ Resolvido em: *${minutes} minutos*`,
+      ``,
+      `📋 Resumo:`,
+      resolution.summary,
+      ``,
+      `Como foi o atendimento? Responda com 1 (ruim) a 5 (excelente).`,
+    ].join('\n'),
+  } as any)
+}
+
+// ── Estatísticas do turno ────────────────────────────────────────────────────
+export async function getShiftStats() {
+  const supabase = await createAdminClient()
+  const today = new Date(); today.setHours(0,0,0,0)
+
+  const [resolved, open, slaBreached] = await Promise.all([
+    supabase.from('emergency_tickets').select('response_time_seconds', { count: 'exact' })
+      .eq('status', 'resolved').gte('created_at', today.toISOString()),
+    supabase.from('emergency_tickets').select('id', { count: 'exact' })
+      .in('status', ['open', 'assigned']),
+    supabase.from('emergency_tickets').select('id', { count: 'exact' })
+      .eq('sla_breached', true).gte('created_at', today.toISOString()),
+  ])
+
+  const avgResponse = resolved.data?.length
+    ? resolved.data.reduce((s, t) => s + (t.response_time_seconds ?? 0), 0) / resolved.data.length
+    : 0
+
+  const slaRate = resolved.count && (resolved.count + (slaBreached.count ?? 0)) > 0
+    ? ((resolved.count / (resolved.count + (slaBreached.count ?? 0))) * 100).toFixed(1)
+    : '100'
+
+  return {
+    resolvedToday:    resolved.count ?? 0,
+    openTickets:      open.count ?? 0,
+    slaBreaches:      slaBreached.count ?? 0,
+    avgResponseMin:   (avgResponse / 60).toFixed(1),
+    slaComplianceRate: slaRate,
+  }
+}
